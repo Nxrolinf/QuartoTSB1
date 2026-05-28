@@ -2,41 +2,429 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "QuartoTSB1",
+    "title": "Time Series Analysis with R",
     "section": "",
-    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n\n1 + 1\n\n[1] 2",
+    "text": "Introduction\nThese pages introduce time series analysis in R through a recipe-based approach.\nEach chapter includes a short conceptual introduction, usually followed by practical, self-contained recipes focused on common tasks.",
     "crumbs": [
-      "Preface"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Time Series with R: A Recipe-Based Introduction</span>"
     ]
   },
   {
-    "objectID": "intro.html",
-    "href": "intro.html",
-    "title": "1  Introduction",
+    "objectID": "basics.html",
+    "href": "basics.html",
+    "title": "2  Basics",
     "section": "",
-    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n1 + 1\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. (USA) 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "text": "2.1 Introduction\nTime series analysis studies data observed through time. In the most practical sense, a time series is a sequence of observations indexed by time, often collected at regular intervals of time (seconds, minutes, hours, days, months, or even years).\nFrom a statistical perspective, time series are different from ordinary unordered data because observations are usually dependent across time. This means that nearby observations often influence one another, which is why time series require specialized methods.\nIt is in our intention to introduce some core notions on time series. The goal is not to build sophisticated models, but to understand what a time series are, how they differ from other data structures, what are their uses, and what kinds of questions time series analysis is designed to answer.\nCode\n# We use mostly built-in functionality in this chapter.\n# The forecast package is used in one example for a simple forecast.\nlibrary(forecast)\nlibrary(ggplot2)\nlibrary(ggfortify)",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
     ]
   },
   {
-    "objectID": "summary.html",
-    "href": "summary.html",
-    "title": "2  Summary",
+    "objectID": "basics.html#introduction",
+    "href": "basics.html#introduction",
+    "title": "2  Basics",
     "section": "",
-    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
+    "text": "This chapter is intentionally introductory. The goal is not yet to model or forecast a series, but to build the conceptual vocabulary needed for the rest of the book.",
     "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Summary</span>"
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
     ]
   },
   {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. (USA) 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "objectID": "basics.html#recognize-what-qualifies-as-a-time-series",
+    "href": "basics.html#recognize-what-qualifies-as-a-time-series",
+    "title": "2  Basics",
+    "section": "2.2 Recognize What Qualifies as a Time Series",
+    "text": "2.2 Recognize What Qualifies as a Time Series\nA time series is a sequence of values recorded over time for the same variable or process. There are many examples, such as daily temperatures, monthly unemployment, hourly electricity demand, stock prices, annual GDP, daily solar power, and many others.\nUsually, observations are assumed to occur at regular intervals of time. This regularity is commonly described by the frequency of the series. For example: - frequency = 1 for yearly data - frequency = 4 for quarterly data - frequency = 12 for monthly data\nA useful rule of thumb is this: if the order of the observations matters, and especially if adjacent observations are expected to be related, then the data should be treated as a time series.\n\n2.2.1 Example1: simple time series objects\n\n\nCode\n# Yearly data\nyearly_sales &lt;- ts(c(120, 135, 142, 160, 175), start = 2020, frequency = 1)\nyearly_sales\n\n\nTime Series:\nStart = 2020 \nEnd = 2024 \nFrequency = 1 \n[1] 120 135 142 160 175\n\n\nCode\n# Quarterly data\nquarterly_demand &lt;- ts(c(50, 55, 53, 60, 62, 64, 63, 70),\n                       start = c(2023, 1), frequency = 4)\nquarterly_demand\n\n\n     Qtr1 Qtr2 Qtr3 Qtr4\n2023   50   55   53   60\n2024   62   64   63   70\n\n\nCode\n# Monthly data using a built-in dataset\nAirPassengers\n\n\n     Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec\n1949 112 118 132 129 121 135 148 148 136 119 104 118\n1950 115 126 141 135 125 149 170 170 158 133 114 140\n1951 145 150 178 163 172 178 199 199 184 162 146 166\n1952 171 180 193 181 183 218 230 242 209 191 172 194\n1953 196 196 236 235 229 243 264 272 237 211 180 201\n1954 204 188 235 227 234 264 302 293 259 229 203 229\n1955 242 233 267 269 270 315 364 347 312 274 237 278\n1956 284 277 317 313 318 374 413 405 355 306 271 306\n1957 315 301 356 348 355 422 465 467 404 347 305 336\n1958 340 318 362 348 363 435 491 505 404 359 310 337\n1959 360 342 406 396 420 472 548 559 463 407 362 405\n1960 417 391 419 461 472 535 622 606 508 461 390 432\n\n\nCode\nfrequency(AirPassengers)\n\n\n[1] 12\n\n\nCode\nstart(AirPassengers)\n\n\n[1] 1949    1\n\n\nCode\nend(AirPassengers)\n\n\n[1] 1960   12\n\n\nCode\nplot(AirPassengers,\n     main = \"Monthly Airline Passengers\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"steelblue\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThese examples illustrate a defining feature of time series work in R: the data are not just values, but values interpreted together with temporal location and frequency. Even when the values are simple numeric observations, attaching a time structure allows them to be analyzed and visualized as a sequence evolving through time.",
     "crumbs": [
-      "References"
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "basics.html#the-different-approaches-of-time-series",
+    "href": "basics.html#the-different-approaches-of-time-series",
+    "title": "2  Basics",
+    "section": "2.3 The Different Approaches of Time Series",
+    "text": "2.3 The Different Approaches of Time Series\nThere are several complementary ways to deal with a time series.\n\nA time series – as a set of measurements collected over time for the same process or unit of observation (practical approach).\nA time series as a realization of a stochastic process. This emphasizes that observations are typically not independent and that their ordering in time is central to the analysis (statistical approach).\nFor the case of R, time series are usually stored in special objects that preserve temporal structure and enable specific methods for plotting, transforming, and analyzing the data (computational approach, focused on representation).\n\n\n2.3.1 Example: different forms, same values\n\n\nCode\nlibrary(ggfortify)\nvalues &lt;- c(120, 135, 142, 160, 175)\n\n# 1. Plain numeric vector\nvalues\n\n\n[1] 120 135 142 160 175\n\n\nCode\n# 2. Data frame with explicit year column\nsales_df &lt;- data.frame(\n  year = 2020:2024,\n  sales = values\n)\nsales_df\n\n\n  year sales\n1 2020   120\n2 2021   135\n3 2022   142\n4 2023   160\n5 2024   175\n\n\nCode\n# Autoplot with specified columns\nggplot(sales_df, aes(x = year, y = sales)) +\n  geom_line(color = \"steelblue\", linewidth = 1) +\n  geom_point(color = \"steelblue\", size = 2) +\n  labs(\n    title = \"Sales Data as a Data Frame (ggplot2)\",\n    x = \"Year\",\n    y = \"Sales\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\n# 3. Time series object\nsales_ts &lt;- ts(values, start = 2020, frequency = 1)\nsales_ts\n\n\nTime Series:\nStart = 2020 \nEnd = 2024 \nFrequency = 1 \n[1] 120 135 142 160 175\n\n\nCode\n# Compare the structures\nclass(values)\n\n\n[1] \"numeric\"\n\n\nCode\nclass(sales_df)\n\n\n[1] \"data.frame\"\n\n\nCode\nclass(sales_ts)\n\n\n[1] \"ts\"\n\n\nCode\n# Plot the time series version\nplot(sales_ts,\n     type = \"o\",\n     pch = 16,\n     col = \"darkgreen\",\n     main = \"Sales Data as a Time Series (plot)\",\n     ylab = \"Sales\",\n     xlab = \"Year\")\n\n\n\n\n\n\n\n\n\nCode\n# Alternative plot for the time series version\nautoplot(sales_ts) +\n  labs(\n    title = \"Sales Data as a Time Series Object (autoplot)\",\n    x = \"Year\",\n    y = \"Sales\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe numeric vector contains only values.\nThe data frame adds an explicit year variable.\nThe ts object adds temporal semantics that R can use for time-aware analysis and plotting.\n\nWhile the representations similar information, they support different workflows and methods. This distinction becomes important when we’re dealing with various time series representations in R.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "basics.html#identify-common-uses-of-time-series",
+    "href": "basics.html#identify-common-uses-of-time-series",
+    "title": "2  Basics",
+    "section": "2.4 Identify Common Uses of Time Series",
+    "text": "2.4 Identify Common Uses of Time Series\nTime series are used in many domains because they help us understand how a variable evolves through time.\nOne major use is forecasting, where past data are used to predict future values.\nA second use is description and monitoring, where the goal is to inspect the evolution of the series and identify broad patterns such as growth, seasonality, or sudden changes.\nA third use is explanation, where the objective is to understand temporal relationships, delays, and persistence.\nA fourth use is decision support, where time series help guide planning, operations, and control.\n\n2.4.1 Description, monitoring, and a simple forecast\n\n\n\n\n\n\nNoteTime series datasets\n\n\n\nAn example based on the AirPassengers dataset, already available in R (the dataset package).\nCheck the package timeSeriesDataSets for more datasets: you’ll have to install the package(s) first.\n\n\n\n\nCode\n# Plot the series for visual inspection\nplot(AirPassengers,\n     main = \"AirPassengers: A Classic Time Series Example\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"navy\")\n\n\n\n\n\n\n\n\n\nCode\n# Add a simple moving average to highlight long-term movement\nair_ma &lt;- stats::filter(AirPassengers, rep(1/12, 12), sides = 2)\n\nplot(AirPassengers,\n     main = \"AirPassengers with 12-Month Moving Average\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"gray40\")\nlines(air_ma, col = \"red\", lwd = 2)\n\n\n\n\n\n\n\n\n\nCode\n# A very simple forecast as an illustration of the forecasting objective\nair_naive_fc &lt;- naive(AirPassengers, h = 12)\nplot(air_naive_fc,\n     main = \"Naive Forecast for AirPassengers\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipExercise\n\n\n\nYou can check other simple forecasting functions, like\n# library (forecast) is required!\n\nair_naive_fc1 &lt;- forecast(AirPassengers, h = 12)\nair_naive_fc2 &lt;- rwf (AirPassengers, h = 12)\nor do some other investigations\n# Drift forecast\nrwf(AirPassengers, drift = TRUE) |&gt; autoplot()\n\n# Seasonal naive forecasts\nsnaive(AirPassengers) |&gt; autoplot()\n\n\n\n\n\n\n\n\nImportantDiscussion\n\n\n\nThe first plot supports visual description. The moving average helps reveal long-term movement by smoothing short-term variation. The naive forecast illustrates the forecasting objective in its simplest form: future values are projected from past behavior.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "basics.html#formulate-the-objectives-of-time-series-analysis",
+    "href": "basics.html#formulate-the-objectives-of-time-series-analysis",
+    "title": "2  Basics",
+    "section": "2.5 Formulate the Objectives of Time Series Analysis",
+    "text": "2.5 Formulate the Objectives of Time Series Analysis\nThe objectives of time series analysis can be grouped into several broad categories:\n\nDescription: Summarize and visualize the structure of a series.\nExplanation: Understand the mechanisms or relationships underlying the observed behavior.\nForecasting: Predict future values using past observations.\nDetection: Identify unusual events, changes, anomalies, or structural breaks.\nSupport for decision making: Use time-dependent information to guide planning and intervention.\n\n\n2.5.1 Example: Basic operations matching these objectives\n\n\nCode\n# Description: simple summary and plot\nsummary(AirPassengers)\n\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  104.0   180.0   265.5   280.3   360.5   622.0 \n\n\nCode\nplot(AirPassengers,\n     main = \"Description: Plot of AirPassengers\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"steelblue\")\n\n\n\n\n\n\n\n\n\nCode\n# Explanation: inspect dependence through the autocorrelation function\nacf(AirPassengers,\n    main = \"Explanation: Autocorrelation in AirPassengers\")\n\n\n\n\n\n\n\n\n\nCode\n# Forecasting: produce a forecast from an exponential smoothing model\nair_hw &lt;- HoltWinters(AirPassengers)\nair_hw_fc &lt;- forecast(air_hw, h = 12)\n\nplot(air_hw_fc,\n     main = \"Forecasting: Holt-Winters Forecast\")\n\n\n\n\n\n\n\n\n\nCode\n# Detection: identify unusually large month-to-month changes\nair_diff &lt;- diff(AirPassengers)\nplot(air_diff,\n     main = \"Detection: Month-to-Month Change\",\n     ylab = \"Difference\",\n     xlab = \"Year\",\n     col = \"purple\")\nabline(h = 0, lty = 2)\n\n\n\n\n\n\n\n\n\n\n\n2.5.2 Discussion\nThese examples illustrate how the same series can support multiple analytical goals. Visualization and summary serve description, autocorrelation helps reveal internal temporal structure, forecasting projects future values, and differencing can highlight changes or unusually large movements between consecutive periods.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "basics.html#why-time-matters",
+    "href": "basics.html#why-time-matters",
+    "title": "2  Basics",
+    "section": "2.6 Why Time Matters",
+    "text": "2.6 Why Time Matters\nTime changes the structure of the data because it introduces order and, often, dependence.\nIn many classical statistical methods, observations are assumed to be independent. Time series often violate this assumption because adjacent observations tend to be correlated.\nThis means that the order of the observations is not arbitrary. Shuffling a time series destroys part of the information we care about, namely its temporal structure.\n\n2.6.1 Example: Compare an ordered series with a shuffled version\n\nOriginalShuffled\n\n\n\n\nCode\nset.seed(123)\n\n# Original series\noriginal_series &lt;- AirPassengers\n\n# Shuffled version: same values, wrong order\nshuffled_series &lt;- ts(sample(as.numeric(AirPassengers)),\n                      start = start(AirPassengers),\n                      frequency = frequency(AirPassengers))\n\npar(mfrow = c(1, 2))\n\nautoplot(original_series) +\n  labs(\n    title = \"Original Time Series\",\n    x = \"Year\",\n    y = \"Passengers\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\npar(mfrow = c(1, 1))\n\n# Compare autocorrelation\npar(mfrow = c(1, 2)) # two column plots\n\nacf(original_series, main = \"ACF: Original Series\")\n\npar(mfrow = c(1, 1)) # back to one column\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nset.seed(123)\n\n# Original series\noriginal_series &lt;- AirPassengers\n\n# Shuffled version: same values, wrong order\nshuffled_series &lt;- ts(sample(as.numeric(AirPassengers)),\n                      start = start(AirPassengers),\n                      frequency = frequency(AirPassengers))\n\npar(mfrow = c(1, 2))\n\nautoplot(shuffled_series) +\n  labs(\n    title = \"Original Time Series\",\n    x = \"Year\",\n    y = \"Passengers\",\n    color = \"tomato\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\nplot(shuffled_series,\n     main = \"Shuffled Values\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"tomato\")\n\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\n\nCode\n# Compare autocorrelation\npar(mfrow = c(1, 2))\n\nacf(original_series, main = \"ACF: Original Series\")\nacf(shuffled_series, main = \"ACF: Shuffled Series\")\n\n\n\n\n\n\n\n\n\nCode\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\n\n\n\nTipDiscussion\n\n\n\nThe shuffled series contains the same values as the original series, but it no longer preserves their temporal order. As a result, the visible structure is lost and the autocorrelation pattern is altered. This simple experiment shows why time series analysis must take ordering seriously.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "basics.html#exploring-more-sample-datasets",
+    "href": "basics.html#exploring-more-sample-datasets",
+    "title": "2  Basics",
+    "section": "2.7 Exploring more sample datasets",
+    "text": "2.7 Exploring more sample datasets\n\nFinanceHealthTemperatureMultiple measurements (stock market)\n\n\nThe JohnsonJohnson dataset is a quarterly time series giving earnings per share for Johnson & Johnson. It is useful as a compact example of a financial time series with a clear long-term trend and visible fluctuations across quarters.\n\n\nCode\nautoplot(\n  JohnsonJohnson, ts.colour = \"steelblue\", ts.size = 0.8, \n  lwd = 2) + \n  labs (\n    title = \"Johnson & Johnson Quarterly Earnings\",\n    y = \"Earnings per share\",\n    x = \"Year\") + theme_minimal()\n\n\n\n\n\n\n\n\nFigure 2.1: Financial time series example: the built-in JohnsonJohnson dataset shows quarterly earnings per Johnson & Johnson share. This figure illustrates a univariate time series from the financial domain, where the horizontal axis represents time in quarters and the vertical axis represents earnings per share.\n\n\n\n\n\n\n\nThe ldeaths dataset records monthly deaths from lung diseases in the United Kingdom. It provides a health-related example in which repeated measurement over time can reveal long-term changes and seasonal patterns.\n\n\nCode\nautoplot(ldeaths, ts.colour = \"firebrick\", ts.size = 0.8) +\n  labs (\n    title = \"Monthly Deaths from Lung Diseases in the UK\",\n    y = \"Number of deaths\",\n    x = \"Year\") + theme_minimal()\n\n\n\n\n\n\n\n\nFigure 2.2: Health time series example: the built-in ldeaths dataset records monthly deaths from lung diseases in the UK. This figure illustrates a univariate health-related time series, where each observation corresponds to a monthly count of deaths.\n\n\n\n\n\n\n\nThe nottem dataset contains average monthly air temperatures recorded in Nottingham from 1920 to 1939. It is a classical example of a climatic time series and is especially useful for showing seasonality.\n\n\nCode\nautoplot(nottem, ts.colour = \"darkorange\", ts.size = 0.8) +\n  labs(\n    title = \"Average Monthly Temperatures at Nottingham\",\n    x = \"Year\",\n    y = \"Temperature\"\n  ) + theme_minimal()\n\n\n\n\n\n\n\n\nFigure 2.3: Temperature time series example: the built-in nottem dataset contains average monthly temperatures measured in Nottingham from 1920 to 1939. The recurring annual pattern makes it a useful illustration of seasonality in an environmental time series.\n\n\n\n\n\n\n\nThe EuStockMarkets dataset is a multivariate time series containing daily closing prices of several major European stock indices. Unlike the previous examples, which are univariate, this dataset stores multiple measurements observed at the same time points.\n\n\nCode\nautoplot (EuStockMarkets) + labs (x=\"Year\", y=\"Index Value\", title = \"European Stock Market Indices\")\n\n#matplot(\n#  time(EuStockMarkets),\n#  EuStockMarkets,\n#  type = \"l\",\n#  lty = 1,\n#  lwd = 1.5,\n#  col = c(\"steelblue\", \"firebrick\", \"darkgreen\", \"goldenrod\"),\n#  xlab = \"Year\",\n#  ylab = \"Index value\",\n#  main = \"European Stock Market Indices\"\n#)\n\n#legend(\n#  \"topleft\",\n#  legend = colnames(EuStockMarkets),\n#  col = c(\"steelblue\", \"firebrick\", \"darkgreen\", \"goldenrod\"),\n#  lty = 1,\n#  lwd = 1.5,\n#  bty = \"n\"\n#)\n\n\n\n\n\n\n\n\nFigure 2.4: Multivariate time series example: the built-in EuStockMarkets dataset contains daily closing prices for several major European stock indices. This figure illustrates a time series with multiple measurements observed at each time point, making it suitable for discussing multivariate or multiple-series time series data.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "basics.html#summary",
+    "href": "basics.html#summary",
+    "title": "2  Basics",
+    "section": "2.8 Summary",
+    "text": "2.8 Summary\nIn this chapter, we introduced the basic conceptual foundations of time series analysis. A time series is more than a list of values with timestamps: it is data whose ordering in time matters and whose observations are often related across time.\nWe distinguished practical, statistical, and computational views of time series, discussed common uses such as description, monitoring, forecasting, and decision support, and outlined the major objectives of time series analysis.\nThe next chapter moves from concepts to implementation by examining how time series can be represented in R using several different object types and data paradigms.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html",
+    "href": "representations.html",
+    "title": "3  Time Series Representations",
+    "section": "",
+    "text": "3.1 Introduction\nA short presentation of the main main ways in which time series can be represented in R, with a practical approach: the same underlying time series data can be stored as a plain vector, a data frame, a classical ts object, a zoo/xts indexed object, or a tsibble. Additionally real work often requires importing data from files or packages and converting between various formats.\nFor an easier comparison, we’re using the global temperature anomaly datasets: gtemp_both_ts, gtemp_land_ts, and gtemp_ocean_ts from the timeSeriesDataSets package.\nCode\nlibrary(ggplot2)\nlibrary(ggfortify)\nlibrary(zoo)\nlibrary(xts)\nlibrary(tsibble)\nlibrary(tsbox)\nlibrary(dplyr)\nlibrary(tibble)\nlibrary(tidyr)\nlibrary(timeSeriesDataSets)\n\n# Running example datasets\n# gtemp_both_ts  : global land + ocean temperature \n# gtemp_land_ts  : global land temperature \n# gtemp_ocean_ts : global ocean temperature \n\n#\n# additional datasets are available in R (`datasets` package)",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#introduction",
+    "href": "representations.html#introduction",
+    "title": "3  Time Series Representations",
+    "section": "",
+    "text": "Note\n\n\n\nThis chapter is organized by representational task rather than by package. Each recipe uses a tabset so the reader can compare alternative approaches side by side.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#time-series-from-an-r-package",
+    "href": "representations.html#time-series-from-an-r-package",
+    "title": "3  Time Series Representations",
+    "section": "3.2 Time Series From an R Package",
+    "text": "3.2 Time Series From an R Package\nOne of the simplest import path: load a time series object directly from an installed package (timeSeriesDataSets).\n\ngtemp_both_tsgtemp_land_tsgtemp_ocean_tsFunctions\n\n\n\n\nCode\ndata(gtemp_both_ts, package = \"timeSeriesDataSets\")\nclass(gtemp_both_ts)\n\n\n[1] \"ts\"\n\n\nCode\nstart(gtemp_both_ts)\n\n\n[1] 1850    1\n\n\nCode\nend(gtemp_both_ts)\n\n\n[1] 2023    1\n\n\nCode\nfrequency(gtemp_both_ts)\n\n\n[1] 1\n\n\nCode\nhead(gtemp_both_ts)\n\n\nTime Series:\nStart = 1850 \nEnd = 1855 \nFrequency = 1 \n[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16\n\n\n\n\n\n\nCode\ndata(gtemp_land_ts, package = \"timeSeriesDataSets\")\nclass(gtemp_land_ts)\n\n\n[1] \"ts\"\n\n\nCode\nstart(gtemp_land_ts)\n\n\n[1] 1850    1\n\n\nCode\nend(gtemp_land_ts)\n\n\n[1] 2023    1\n\n\nCode\nfrequency(gtemp_land_ts)\n\n\n[1] 1\n\n\nCode\nhead(gtemp_land_ts)\n\n\nTime Series:\nStart = 1850 \nEnd = 1855 \nFrequency = 1 \n[1] -0.5 -0.6 -0.5 -0.5 -0.2 -0.5\n\n\n\n\n\n\nCode\ndata(gtemp_ocean_ts, package = \"timeSeriesDataSets\")\nclass(gtemp_ocean_ts)\n\n\n[1] \"ts\"\n\n\nCode\nstart(gtemp_ocean_ts)\n\n\n[1] 1850    1\n\n\nCode\nend(gtemp_ocean_ts)\n\n\n[1] 2023    1\n\n\nCode\nfrequency(gtemp_ocean_ts)\n\n\n[1] 1\n\n\nCode\nhead(gtemp_ocean_ts)\n\n\nTime Series:\nStart = 1850 \nEnd = 1855 \nFrequency = 1 \n[1] -0.12 -0.08 -0.14  0.04  0.04  0.00\n\n\n\n\n# use data() to load `dataset_name` -- this does not exist!\ndata(dataset_name, package = \"timeSeriesDataSets\") \n\n# simple class information, should return `ts`\nclass(dataset_name) \n\n# Time of first observation (e.g., year) for a time-series\nstart(dataset_name) \n\n# Time of last observation (e.g., year) for a time-series\nend(dataset_name) # Last recorded index (year)\n\n# The number of samples per unit time \nfrequency(dataset_name) \n# Also check `time`, `cycle`, `deltat`\n\n#First recorded data; Use `tail` for last recorded data\nhead(dataset_name) \n\n\n\n\n\n\n\n\n\nImportantNotice\n\n\n\n\nAll three datasets are already ts objects;\nThe datasets from timeSeriesDataSets are immediately ready for time-series-aware plotting and modeling;\nUsing package-provided datasets, as they are convenient for teaching.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#from-plain-data",
+    "href": "representations.html#from-plain-data",
+    "title": "3  Time Series Representations",
+    "section": "3.3 From Plain Data …",
+    "text": "3.3 From Plain Data …\nStart from existing datasets, reconstruct it from more primitive forms.\n\nVectorData frameTibblePlot the data\n\n\nAs a numeric vector only. Extract the numeric values (as.numeric), and check the content.\n\n\nCode\ngtemp_vec &lt;- as.numeric(gtemp_both_ts)\nhead(gtemp_vec)\n\n\n[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16\n\n\nCode\nclass(gtemp_vec)\n\n\n[1] \"numeric\"\n\n\n\n\nAs data frames, with explicit year column. Extract both dimensions (with time and as.numeric), reconstruct with tibble.\n\n\nCode\ngtemp_df &lt;- tibble(\n  year = time(gtemp_both_ts),\n  anomaly = as.numeric(gtemp_both_ts)\n)\n# also, year = as.numeric(time(gtemp_both_ts))\n\ngtemp_df\n\n\n# A tibble: 174 × 2\n    year anomaly\n   &lt;dbl&gt;   &lt;dbl&gt;\n 1  1850   -0.24\n 2  1851   -0.25\n 3  1852   -0.27\n 4  1853   -0.15\n 5  1854   -0.05\n 6  1855   -0.16\n 7  1856   -0.29\n 8  1857   -0.32\n 9  1858   -0.19\n10  1859   -0.04\n# ℹ 164 more rows\n\n\n\n\nTibble, with explicit year column (using as_tibble)\n\n\nCode\ngtemp_tbl &lt;- as_tibble(gtemp_df)\ngtemp_tbl\n\n\n# A tibble: 174 × 2\n    year anomaly\n   &lt;dbl&gt;   &lt;dbl&gt;\n 1  1850   -0.24\n 2  1851   -0.25\n 3  1852   -0.27\n 4  1853   -0.15\n 5  1854   -0.05\n 6  1855   -0.16\n 7  1856   -0.29\n 8  1857   -0.32\n 9  1858   -0.19\n10  1859   -0.04\n# ℹ 164 more rows\n\n\n\n\n\n\nCode\nggplot(gtemp_df, aes(x = year, y = anomaly)) +\n  geom_line(color = \"steelblue\", linewidth = 0.8) +\n  labs(\n    title = \"Global Temperature Anomalies as a Data Frame\",\n    x = \"Year\",\n    y = \"Temperature anomaly\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nFigure 3.1: Global temperature anomalies represented as a plain data frame and plotted with ggplot2. Time is stored explicitly in the year column rather than in a specialized time-series object.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteComment\n\n\n\nThese options illustrate the baseline representations that are easiest to inspect, reshape, and export. The trade-off is that temporal semantics are not enforced automatically. If unsure, consider the tsbox library.\n\n\n\n\nCode\nlibrary(tsbox)\nlibrary(tibbletime)\ndata(gtemp_land_ts, package = \"timeSeriesDataSets\")\ndata(gtemp_ocean_ts, package = \"timeSeriesDataSets\")\nx.ts &lt;- ts_c(gtemp_land_ts, gtemp_ocean_ts)\nhead(x.ts)\n\n\nTime Series:\nStart = 1850 \nEnd = 1855 \nFrequency = 1 \n     gtemp_land_ts gtemp_ocean_ts\n1850          -0.5          -0.12\n1851          -0.6          -0.08\n1852          -0.5          -0.14\n1853          -0.5           0.04\n1854          -0.2           0.04\n1855          -0.5           0.00\n\n\nCode\nx.xts &lt;- ts_xts(x.ts)\nhead(x.xts)\n\n\n           gtemp_land_ts gtemp_ocean_ts\n1850-01-01          -0.5          -0.12\n1851-01-01          -0.6          -0.08\n1852-01-01          -0.5          -0.14\n1853-01-01          -0.5           0.04\n1854-01-01          -0.2           0.04\n1855-01-01          -0.5           0.00\n\n\nCode\nx.df &lt;- ts_df(x.xts)\nhead(x.df)\n\n\n             id       time value\n1 gtemp_land_ts 1850-01-01  -0.5\n2 gtemp_land_ts 1851-01-01  -0.6\n3 gtemp_land_ts 1852-01-01  -0.5\n4 gtemp_land_ts 1853-01-01  -0.5\n5 gtemp_land_ts 1854-01-01  -0.2\n6 gtemp_land_ts 1855-01-01  -0.5\n\n\nCode\nx.dt &lt;- ts_dt(x.df)\nhead(x.dt)\n\n\n              id       time value\n          &lt;char&gt;     &lt;Date&gt; &lt;num&gt;\n1: gtemp_land_ts 1850-01-01  -0.5\n2: gtemp_land_ts 1851-01-01  -0.6\n3: gtemp_land_ts 1852-01-01  -0.5\n4: gtemp_land_ts 1853-01-01  -0.5\n5: gtemp_land_ts 1854-01-01  -0.2\n6: gtemp_land_ts 1855-01-01  -0.5\n\n\nCode\nx.tbl &lt;- ts_tbl(x.dt)\nhead(x.tbl)\n\n\n# A tibble: 6 × 3\n  id            time       value\n  &lt;chr&gt;         &lt;date&gt;     &lt;dbl&gt;\n1 gtemp_land_ts 1850-01-01  -0.5\n2 gtemp_land_ts 1851-01-01  -0.6\n3 gtemp_land_ts 1852-01-01  -0.5\n4 gtemp_land_ts 1853-01-01  -0.5\n5 gtemp_land_ts 1854-01-01  -0.2\n6 gtemp_land_ts 1855-01-01  -0.5\n\n\nCode\nx.zoo &lt;- ts_zoo(x.tbl)\nhead(x.zoo)\n\n\n           gtemp_land_ts gtemp_ocean_ts\n1850-01-01          -0.5          -0.12\n1851-01-01          -0.6          -0.08\n1852-01-01          -0.5          -0.14\n1853-01-01          -0.5           0.04\n1854-01-01          -0.2           0.04\n1855-01-01          -0.5           0.00\n\n\nCode\nx.tsibble &lt;- ts_tsibble(x.zoo)\nhead(x.tsibble)\n\n\n# A tsibble: 6 x 3 [1D]\n# Key:       id [1]\n  id            time       value\n  &lt;chr&gt;         &lt;date&gt;     &lt;dbl&gt;\n1 gtemp_land_ts 1850-01-01  -0.5\n2 gtemp_land_ts 1851-01-01  -0.6\n3 gtemp_land_ts 1852-01-01  -0.5\n4 gtemp_land_ts 1853-01-01  -0.5\n5 gtemp_land_ts 1854-01-01  -0.2\n6 gtemp_land_ts 1855-01-01  -0.5\n\n\nCode\nx.tibbletime &lt;- ts_tibbletime(x.tsibble)\nhead(x.tibbletime)\n\n\n# A time tibble: 6 × 3\n# Index:         time\n  time       gtemp_land_ts gtemp_ocean_ts\n  &lt;date&gt;             &lt;dbl&gt;          &lt;dbl&gt;\n1 1850-01-01          -0.5          -0.12\n2 1851-01-01          -0.6          -0.08\n3 1852-01-01          -0.5          -0.14\n4 1853-01-01          -0.5           0.04\n5 1854-01-01          -0.2           0.04\n6 1855-01-01          -0.5           0   \n\n\nCode\nx.timeSeries &lt;- ts_timeSeries(x.tibbletime)\nhead(x.timeSeries)\n\n\nGMT\n           gtemp_land_ts gtemp_ocean_ts\n1850-01-01          -0.5          -0.12\n1851-01-01          -0.6          -0.08\n1852-01-01          -0.5          -0.14\n1853-01-01          -0.5           0.04\n1854-01-01          -0.2           0.04\n1855-01-01          -0.5           0.00\n\n\nCode\nall.equal(ts_ts(x.timeSeries), x.ts)  # TRUE\n\n\n[1] TRUE",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#time-series-in-various-formats",
+    "href": "representations.html#time-series-in-various-formats",
+    "title": "3  Time Series Representations",
+    "section": "3.4 Time Series in Various Formats",
+    "text": "3.4 Time Series in Various Formats\nUsing the same global temperature series, gtemp_both_ts, and storing them in several R time-series representations.\n\ntszooxtstsibblePlot the ts object with ggplot2::autoplot()\n\n\n\n\nCode\ngtemp_ts &lt;- gtemp_both_ts\nclass(gtemp_ts)\n\n\n[1] \"ts\"\n\n\nCode\nhead(gtemp_ts)\n\n\nTime Series:\nStart = 1850 \nEnd = 1855 \nFrequency = 1 \n[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16\n\n\nNotice that this is the native format for timeSeriesDataSets!\n\n\n\n\nCode\ngtemp_zoo &lt;- zoo(\n  as.numeric(gtemp_both_ts),\n  order.by = as.numeric(time(gtemp_both_ts))\n)\nclass(gtemp_zoo)\n\n\n[1] \"zoo\"\n\n\nCode\nhead(gtemp_zoo)\n\n\n 1850  1851  1852  1853  1854  1855 \n-0.24 -0.25 -0.27 -0.15 -0.05 -0.16 \n\n\nFor zoo and xts, we have to manipulate the different dimensions of data.\n\n\n\n\nCode\ngtemp_years &lt;- floor(as.numeric(time(gtemp_both_ts)))\ngtemp_xts &lt;- xts(\n  as.numeric(gtemp_both_ts),\n  order.by = as.Date(paste0(gtemp_years, \"-01-01\"))\n)\nclass(gtemp_xts)\n\n\n[1] \"xts\" \"zoo\"\n\n\nCode\nhead(gtemp_xts)\n\n\n            [,1]\n1850-01-01 -0.24\n1851-01-01 -0.25\n1852-01-01 -0.27\n1853-01-01 -0.15\n1854-01-01 -0.05\n1855-01-01 -0.16\n\n\n\n\n\n\nCode\ngtemp_tsibble &lt;- tibble(\n  year = gtemp_years,\n  anomaly = as.numeric(gtemp_both_ts)\n) |&gt;\n  as_tsibble(index = year)\n\nclass(gtemp_tsibble)\n\n\n[1] \"tbl_ts\"     \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\nCode\ngtemp_tsibble\n\n\n# A tsibble: 174 x 2 [1Y]\n    year anomaly\n   &lt;dbl&gt;   &lt;dbl&gt;\n 1  1850   -0.24\n 2  1851   -0.25\n 3  1852   -0.27\n 4  1853   -0.15\n 5  1854   -0.05\n 6  1855   -0.16\n 7  1856   -0.29\n 8  1857   -0.32\n 9  1858   -0.19\n10  1859   -0.04\n# ℹ 164 more rows\n\n\n\n3.5 tsbox\nWith tsbox, you have some handy conversions, from/to any format (supported by the package). Just check if your results are the same, for the various options.\n\n\nCode\ntsb_tsibble &lt;- ts_tsibble(gtemp_both_ts) \nclass(tsb_tsibble)\n\n\n[1] \"tbl_ts\"     \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\nCode\ntsb_tsibble\n\n\n# A tsibble: 174 x 2 [1D]\n   time       value\n   &lt;date&gt;     &lt;dbl&gt;\n 1 1850-01-01 -0.24\n 2 1851-01-01 -0.25\n 3 1852-01-01 -0.27\n 4 1853-01-01 -0.15\n 5 1854-01-01 -0.05\n 6 1855-01-01 -0.16\n 7 1856-01-01 -0.29\n 8 1857-01-01 -0.32\n 9 1858-01-01 -0.19\n10 1859-01-01 -0.04\n# ℹ 164 more rows\n\n\n\n\n\n\n\nCode\n# Use ggfortify method via ggplot2::autoplot\n# This is more Quarto-safe than relying on a plain autoplot() call.\nggplot2::autoplot(\n  gtemp_ts,\n  ts.colour = \"darkorange\",\n  ts.size = 0.8,\n  main = \"Global Temperature Anomalies as a ts Object\",\n  xlab = \"Year\",\n  ylab = \"Temperature anomaly\"\n) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nFigure 3.2: The gtemp_both_ts series plotted as a classical ts object. In this case, the temporal structure is embedded directly in the object and handled automatically by time-series-aware plotting methods.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipExercise\n\n\n\nCheck the various conversion formats supported by tsbox and repeat previous transformations. Try to plot the auto-generated outputs (check if plot, ggplot, or autoplot is available for your dataset)\n\n\n\n\n\n\n\n\nImportantNotice\n\n\n\nWe can view the major representational philosophies for time series:\n\nts: classical approach (and compact);\nxts (also, zoo): indexed and especially useful when time stamp matter;\ntsibble: tidy and explicit, well suited to modern pipelines.\ntsbox: quick and dirty, when you’re happy with automatic conversions.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#tsbox",
+    "href": "representations.html#tsbox",
+    "title": "3  Time Series Representations",
+    "section": "3.5 tsbox",
+    "text": "3.5 tsbox\nWith tsbox, you have some handy conversions, from/to any format (supported by the package). Just check if your results are the same, for the various options.\n\n\nCode\ntsb_tsibble &lt;- ts_tsibble(gtemp_both_ts) \nclass(tsb_tsibble)\n\n\n[1] \"tbl_ts\"     \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\nCode\ntsb_tsibble\n\n\n# A tsibble: 174 x 2 [1D]\n   time       value\n   &lt;date&gt;     &lt;dbl&gt;\n 1 1850-01-01 -0.24\n 2 1851-01-01 -0.25\n 3 1852-01-01 -0.27\n 4 1853-01-01 -0.15\n 5 1854-01-01 -0.05\n 6 1855-01-01 -0.16\n 7 1856-01-01 -0.29\n 8 1857-01-01 -0.32\n 9 1858-01-01 -0.19\n10 1859-01-01 -0.04\n# ℹ 164 more rows",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#recipe-4-import-time-series-data-from-different-file-types",
+    "href": "representations.html#recipe-4-import-time-series-data-from-different-file-types",
+    "title": "3  Time Series Representations",
+    "section": "3.6 Recipe 4: Import Time Series Data from Different File Types",
+    "text": "3.6 Recipe 4: Import Time Series Data from Different File Types\nIn practice, data rarely start as ready-made R time series objects. This recipe shows several common entry points using the same temperature example.\n\nOption 4A: Read from CSVOption 4B: Read from RDSOption 4C: Read from a plain text file with scan()Option 4D: Read from Excel (template code)Discussion\n\n\n\n\nCode\n# Simulate a CSV import using the running example\ncsv_path &lt;- tempfile(fileext = \".csv\")\nwrite.csv(gtemp_df, csv_path, row.names = FALSE)\n\ngtemp_from_csv &lt;- read.csv(csv_path)\nhead(gtemp_from_csv)\n\n\n  year anomaly\n1 1850   -0.24\n2 1851   -0.25\n3 1852   -0.27\n4 1853   -0.15\n5 1854   -0.05\n6 1855   -0.16\n\n\n\n\n\n\nCode\nrds_path &lt;- tempfile(fileext = \".rds\")\nsaveRDS(gtemp_df, rds_path)\n\ngtemp_from_rds &lt;- readRDS(rds_path)\nhead(gtemp_from_rds)\n\n\n# A tibble: 6 × 2\n   year anomaly\n  &lt;dbl&gt;   &lt;dbl&gt;\n1  1850   -0.24\n2  1851   -0.25\n3  1852   -0.27\n4  1853   -0.15\n5  1854   -0.05\n6  1855   -0.16\n\n\n\n\n\n\nCode\ntext_path &lt;- tempfile(fileext = \".txt\")\nwrite(as.numeric(gtemp_both_ts), text_path)\n\ngtemp_from_text &lt;- scan(text_path, quiet = TRUE)\nhead(gtemp_from_text)\n\n\n[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16\n\n\n\n\n\n\nCode\n# Requires readxl (and a real Excel file in the project)\nlibrary(readxl)\n\ngtemp_from_excel &lt;- read_excel(\"data/gtemp_both.xlsx\")\nhead(gtemp_from_excel)\n\n\n\n\nThis recipe distinguishes two separate steps:\n\nimporting the raw data from some storage format;\nconverting the imported object into a time-series representation appropriate for analysis.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#recipe-5-convert-imported-data-into-time-series-objects",
+    "href": "representations.html#recipe-5-convert-imported-data-into-time-series-objects",
+    "title": "3  Time Series Representations",
+    "section": "3.7 Recipe 5: Convert Imported Data into Time-Series Objects",
+    "text": "3.7 Recipe 5: Convert Imported Data into Time-Series Objects\nOnce the data are loaded into R, the next step is usually to convert them into a dedicated time-series representation.\n\nOption 5A: Data frame to tsOption 5B: Data frame to zooOption 5C: Data frame to xtsOption 5D: Data frame to tsibbleDiscussion\n\n\n\n\nCode\ngtemp_ts_from_df &lt;- ts(\n  gtemp_from_csv$anomaly,\n  start = min(gtemp_from_csv$year),\n  frequency = 1\n)\nhead(gtemp_ts_from_df)\n\n\nTime Series:\nStart = 1850 \nEnd = 1855 \nFrequency = 1 \n[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16\n\n\n\n\n\n\nCode\ngtemp_zoo_from_df &lt;- zoo(\n  gtemp_from_csv$anomaly,\n  order.by = gtemp_from_csv$year\n)\nhead(gtemp_zoo_from_df)\n\n\n 1850  1851  1852  1853  1854  1855 \n-0.24 -0.25 -0.27 -0.15 -0.05 -0.16 \n\n\n\n\n\n\nCode\ngtemp_xts_from_df &lt;- xts(\n  gtemp_from_csv$anomaly,\n  order.by = as.Date(paste0(gtemp_from_csv$year, \"-01-01\"))\n)\nhead(gtemp_xts_from_df)\n\n\n            [,1]\n1850-01-01 -0.24\n1851-01-01 -0.25\n1852-01-01 -0.27\n1853-01-01 -0.15\n1854-01-01 -0.05\n1855-01-01 -0.16\n\n\n\n\n\n\nCode\ngtemp_tsibble_from_df &lt;- as_tsibble(gtemp_from_csv, index = year)\ngtemp_tsibble_from_df\n\n\n# A tsibble: 174 x 2 [1Y]\n    year anomaly\n   &lt;int&gt;   &lt;dbl&gt;\n 1  1850   -0.24\n 2  1851   -0.25\n 3  1852   -0.27\n 4  1853   -0.15\n 5  1854   -0.05\n 6  1855   -0.16\n 7  1856   -0.29\n 8  1857   -0.32\n 9  1858   -0.19\n10  1859   -0.04\n# ℹ 164 more rows\n\n\n\n\nThese conversions make the difference between tabular storage and time-aware analysis explicit. The same imported values can support very different workflows depending on how they are encoded after import.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#recipe-6-represent-multiple-measurements-at-each-time-point",
+    "href": "representations.html#recipe-6-represent-multiple-measurements-at-each-time-point",
+    "title": "3  Time Series Representations",
+    "section": "3.8 Recipe 6: Represent Multiple Measurements at Each Time Point",
+    "text": "3.8 Recipe 6: Represent Multiple Measurements at Each Time Point\nThe global temperature datasets also allow a natural comparison between univariate and multiple-series representations.\n\nOption 6A: Wide data frameOption 6B: Multivariate tsOption 6C: Multivariate xtsOption 6D: Long/keyed tsibbleOption 6E: Plot multiple measurementsDiscussion\n\n\n\n\nCode\ngtemp_multi_df &lt;- tibble(\n  year = gtemp_years,\n  land_ocean = as.numeric(gtemp_both_ts),\n  land = as.numeric(gtemp_land_ts),\n  ocean = as.numeric(gtemp_ocean_ts)\n)\n\ngtemp_multi_df\n\n\n# A tibble: 174 × 4\n    year land_ocean  land ocean\n   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n 1  1850      -0.24  -0.5 -0.12\n 2  1851      -0.25  -0.6 -0.08\n 3  1852      -0.27  -0.5 -0.14\n 4  1853      -0.15  -0.5  0.04\n 5  1854      -0.05  -0.2  0.04\n 6  1855      -0.16  -0.5  0   \n 7  1856      -0.29  -0.8 -0.05\n 8  1857      -0.32  -0.4 -0.27\n 9  1858      -0.19  -0.4 -0.09\n10  1859      -0.04  -0.1  0.01\n# ℹ 164 more rows\n\n\n\n\n\n\nCode\ngtemp_multi_ts &lt;- ts(\n  cbind(\n    land_ocean = as.numeric(gtemp_both_ts),\n    land = as.numeric(gtemp_land_ts),\n    ocean = as.numeric(gtemp_ocean_ts)\n  ),\n  start = start(gtemp_both_ts),\n  frequency = frequency(gtemp_both_ts)\n)\n\ngtemp_multi_ts\n\n\nTime Series:\nStart = 1850 \nEnd = 2023 \nFrequency = 1 \n     land_ocean  land ocean\n1850      -0.24 -0.50 -0.12\n1851      -0.25 -0.60 -0.08\n1852      -0.27 -0.50 -0.14\n1853      -0.15 -0.50  0.04\n1854      -0.05 -0.20  0.04\n1855      -0.16 -0.50  0.00\n1856      -0.29 -0.80 -0.05\n1857      -0.32 -0.40 -0.27\n1858      -0.19 -0.40 -0.09\n1859      -0.04 -0.10  0.01\n1860      -0.19 -0.70  0.06\n1861      -0.27 -0.20 -0.28\n1862      -0.27 -0.50 -0.16\n1863      -0.12 -0.20 -0.06\n1864      -0.17 -0.30 -0.11\n1865      -0.17 -0.60  0.04\n1866      -0.06 -0.40  0.12\n1867      -0.20 -0.60  0.01\n1868      -0.09 -0.30  0.02\n1869      -0.14 -0.50  0.02\n1870      -0.04 -0.20  0.07\n1871       0.00 -0.10  0.05\n1872      -0.20 -0.40 -0.07\n1873      -0.25 -0.30 -0.19\n1874      -0.28 -0.40 -0.19\n1875      -0.21 -0.50 -0.07\n1876      -0.15 -0.20 -0.10\n1877       0.04 -0.10  0.11\n1878       0.27  0.26  0.28\n1879      -0.03 -0.20  0.07\n1880      -0.10 -0.50  0.08\n1881      -0.07 -0.40  0.11\n1882      -0.01 -0.20  0.08\n1883      -0.17 -0.40 -0.05\n1884      -0.30 -0.70 -0.10\n1885      -0.26 -0.40 -0.18\n1886      -0.26 -0.50 -0.14\n1887      -0.26 -0.30 -0.20\n1888      -0.33 -0.70 -0.14\n1889       0.06  0.00  0.13\n1890      -0.22 -0.20 -0.23\n1891      -0.20 -0.30 -0.12\n1892      -0.26 -0.50 -0.12\n1893      -0.28 -0.40 -0.21\n1894      -0.15  0.10 -0.26\n1895      -0.30 -0.50 -0.20\n1896      -0.15 -0.50  0.04\n1897      -0.13 -0.70  0.12\n1898      -0.47 -1.10 -0.18\n1899      -0.30 -0.50 -0.18\n1900      -0.03  0.00 -0.01\n1901       0.04  0.21 -0.04\n1902      -0.26 -0.40 -0.17\n1903      -0.16  0.05 -0.26\n1904      -0.53 -0.60 -0.50\n1905      -0.36 -0.70 -0.20\n1906      -0.19 -0.30 -0.14\n1907      -0.25 -0.30 -0.20\n1908      -0.51 -0.80 -0.37\n1909      -0.52 -0.70 -0.41\n1910      -0.51 -0.50 -0.50\n1911      -0.58 -0.80 -0.47\n1912      -0.32 -0.70 -0.12\n1913      -0.39 -0.40 -0.34\n1914      -0.18 -0.10 -0.17\n1915      -0.05 -0.20  0.02\n1916      -0.26 -0.50 -0.16\n1917      -0.64 -1.00 -0.47\n1918      -0.28 -0.30 -0.24\n1919      -0.19 -0.50 -0.05\n1920      -0.11  0.05 -0.18\n1921      -0.23 -0.10 -0.26\n1922      -0.11  0.00 -0.12\n1923      -0.33 -0.30 -0.30\n1924      -0.07  0.01 -0.11\n1925      -0.26 -0.20 -0.28\n1926       0.09  0.53 -0.11\n1927      -0.33 -0.60 -0.20\n1928      -0.23 -0.20 -0.20\n1929      -0.31 -0.30 -0.32\n1930      -0.08  0.21 -0.20\n1931      -0.06 -0.10 -0.03\n1932      -0.13 -0.10 -0.11\n1933      -0.25 -0.30 -0.21\n1934      -0.30 -0.30 -0.28\n1935      -0.13  0.13 -0.24\n1936      -0.20 -0.30 -0.15\n1937      -0.18 -0.40 -0.06\n1938       0.06  0.38 -0.09\n1939      -0.16 -0.20 -0.10\n1940       0.13  0.06  0.17\n1941       0.11 -0.10  0.23\n1942       0.08 -0.10  0.19\n1943      -0.02  0.00 -0.01\n1944       0.30  0.36  0.27\n1945       0.09  0.00  0.16\n1946       0.02  0.00  0.03\n1947       0.05  0.32 -0.07\n1948      -0.21 -0.30 -0.17\n1949       0.04  0.24 -0.04\n1950      -0.08  0.00 -0.10\n1951      -0.16 -0.20 -0.13\n1952      -0.03 -0.30  0.11\n1953       0.15  0.33  0.06\n1954      -0.14 -0.30 -0.07\n1955      -0.29 -0.60 -0.12\n1956      -0.16 -0.20 -0.11\n1957      -0.09 -0.30  0.03\n1958       0.12  0.03  0.15\n1959       0.19  0.49  0.06\n1960      -0.25 -0.90  0.04\n1961       0.10  0.08  0.10\n1962       0.16  0.36  0.07\n1963      -0.13 -0.40  0.01\n1964      -0.15 -0.30 -0.06\n1965      -0.11 -0.10 -0.09\n1966      -0.03 -0.10  0.03\n1967       0.05  0.19 -0.02\n1968       0.17  0.80 -0.11\n1969       0.08 -0.20  0.25\n1970       0.07  0.00  0.12\n1971      -0.09  0.00 -0.10\n1972       0.06  0.13  0.03\n1973       0.34  0.61  0.23\n1974      -0.01  0.18 -0.09\n1975       0.11  0.32  0.02\n1976      -0.13 -0.20 -0.06\n1977       0.24  0.29  0.23\n1978       0.22  0.37  0.16\n1979       0.20  0.10  0.24\n1980       0.31  0.19  0.37\n1981       0.45  0.85  0.26\n1982       0.11  0.00  0.19\n1983       0.44  0.64  0.35\n1984       0.28  0.36  0.25\n1985       0.25  0.42  0.17\n1986       0.33  0.67  0.18\n1987       0.15 -0.20  0.33\n1988       0.46  0.51  0.44\n1989       0.36  0.66  0.23\n1990       0.78  1.61  0.41\n1991       0.38  0.45  0.34\n1992       0.45  0.78  0.31\n1993       0.38  0.64  0.26\n1994       0.30  0.41  0.26\n1995       0.49  0.75  0.37\n1996       0.36  0.44  0.33\n1997       0.51  0.81  0.38\n1998       0.68  0.94  0.56\n1999       0.39  0.36  0.40\n2000       0.59  1.14  0.34\n2001       0.57  0.85  0.44\n2002       0.85  1.58  0.53\n2003       0.61  0.84  0.50\n2004       0.66  1.02  0.50\n2005       0.76  1.36  0.50\n2006       0.67  1.20  0.43\n2007       0.69  1.27  0.43\n2008       0.74  1.65  0.33\n2009       0.54  0.83  0.42\n2010       0.90  1.54  0.61\n2011       0.68  1.27  0.41\n2012       0.54  0.93  0.37\n2013       0.68  1.10  0.49\n2014       0.82  1.52  0.51\n2015       0.97  1.76  0.61\n2016       1.35  2.50  0.83\n2017       1.17  2.15  0.73\n2018       0.93  1.63  0.61\n2019       1.16  2.14  0.72\n2020       1.16  1.95  0.81\n2021       0.88  1.58  0.57\n2022       1.11  2.13  0.65\n2023       1.24  2.26  0.78\n\n\n\n\n\n\nCode\ngtemp_multi_xts &lt;- xts(\n  gtemp_multi_df[, c(\"land_ocean\", \"land\", \"ocean\")],\n  order.by = as.Date(paste0(gtemp_multi_df$year, \"-01-01\"))\n)\n\ngtemp_multi_xts\n\n\n           land_ocean  land ocean\n1850-01-01      -0.24 -0.50 -0.12\n1851-01-01      -0.25 -0.60 -0.08\n1852-01-01      -0.27 -0.50 -0.14\n1853-01-01      -0.15 -0.50  0.04\n1854-01-01      -0.05 -0.20  0.04\n1855-01-01      -0.16 -0.50  0.00\n1856-01-01      -0.29 -0.80 -0.05\n1857-01-01      -0.32 -0.40 -0.27\n1858-01-01      -0.19 -0.40 -0.09\n1859-01-01      -0.04 -0.10  0.01\n       ...                       \n2014-01-01       0.82  1.52  0.51\n2015-01-01       0.97  1.76  0.61\n2016-01-01       1.35  2.50  0.83\n2017-01-01       1.17  2.15  0.73\n2018-01-01       0.93  1.63  0.61\n2019-01-01       1.16  2.14  0.72\n2020-01-01       1.16  1.95  0.81\n2021-01-01       0.88  1.58  0.57\n2022-01-01       1.11  2.13  0.65\n2023-01-01       1.24  2.26  0.78\n\n\n\n\n\n\nCode\ngtemp_multi_tsibble &lt;- gtemp_multi_df |&gt;\n  pivot_longer(\n    cols = c(land_ocean, land, ocean),\n    names_to = \"series\",\n    values_to = \"anomaly\"\n  ) |&gt;\n  as_tsibble(index = year, key = series)\n\ngtemp_multi_tsibble\n\n\n# A tsibble: 522 x 3 [1Y]\n# Key:       series [3]\n    year series anomaly\n   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;\n 1  1850 land      -0.5\n 2  1851 land      -0.6\n 3  1852 land      -0.5\n 4  1853 land      -0.5\n 5  1854 land      -0.2\n 6  1855 land      -0.5\n 7  1856 land      -0.8\n 8  1857 land      -0.4\n 9  1858 land      -0.4\n10  1859 land      -0.1\n# ℹ 512 more rows\n\n\n\n\n\n\nCode\nggplot(gtemp_multi_tsibble, aes(x = year, y = anomaly, color = series)) +\n  geom_line(linewidth = 0.8) +\n  labs(\n    title = \"Global Temperature Anomaly Series\",\n    x = \"Year\",\n    y = \"Temperature anomaly\",\n    color = \"Series\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nFigure 3.3: Three related temperature anomaly series represented together: combined land-and-ocean, land-only, and ocean-only. This illustrates a case where each time point carries multiple measurements rather than a single scalar value.\n\n\n\n\n\n\n\nThis recipe is useful for distinguishing:\n\nmultivariate storage (mts, wide xts),\nmultiple-series tidy storage (keyed tsibble), and\na simple wide tabular representation intended for interoperability.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#recipe-7-convert-between-representations",
+    "href": "representations.html#recipe-7-convert-between-representations",
+    "title": "3  Time Series Representations",
+    "section": "3.9 Recipe 7: Convert Between Representations",
+    "text": "3.9 Recipe 7: Convert Between Representations\nTime-series analysis in R often requires jumping between frameworks.\n\nOption 7A: Convert with tsbox to a tidy tableOption 7B: Convert with tsbox to xtsOption 7C: Convert with tsbox to tsibbleOption 7D: Convert a tsibble back to another formatDiscussion\n\n\n\n\nCode\ntsbox::ts_tbl(gtemp_both_ts)\n\n\n# A tibble: 174 × 2\n   time       value\n   &lt;date&gt;     &lt;dbl&gt;\n 1 1850-01-01 -0.24\n 2 1851-01-01 -0.25\n 3 1852-01-01 -0.27\n 4 1853-01-01 -0.15\n 5 1854-01-01 -0.05\n 6 1855-01-01 -0.16\n 7 1856-01-01 -0.29\n 8 1857-01-01 -0.32\n 9 1858-01-01 -0.19\n10 1859-01-01 -0.04\n# ℹ 164 more rows\n\n\n\n\n\n\nCode\ntsbox::ts_xts(gtemp_both_ts)\n\n\n           value\n1850-01-01 -0.24\n1851-01-01 -0.25\n1852-01-01 -0.27\n1853-01-01 -0.15\n1854-01-01 -0.05\n1855-01-01 -0.16\n1856-01-01 -0.29\n1857-01-01 -0.32\n1858-01-01 -0.19\n1859-01-01 -0.04\n       ...      \n2014-01-01  0.82\n2015-01-01  0.97\n2016-01-01  1.35\n2017-01-01  1.17\n2018-01-01  0.93\n2019-01-01  1.16\n2020-01-01  1.16\n2021-01-01  0.88\n2022-01-01  1.11\n2023-01-01  1.24\n\n\n\n\n\n\nCode\ntsbox::ts_tsibble(gtemp_both_ts)\n\n\n# A tsibble: 174 x 2 [1D]\n   time       value\n   &lt;date&gt;     &lt;dbl&gt;\n 1 1850-01-01 -0.24\n 2 1851-01-01 -0.25\n 3 1852-01-01 -0.27\n 4 1853-01-01 -0.15\n 5 1854-01-01 -0.05\n 6 1855-01-01 -0.16\n 7 1856-01-01 -0.29\n 8 1857-01-01 -0.32\n 9 1858-01-01 -0.19\n10 1859-01-01 -0.04\n# ℹ 164 more rows\n\n\n\n\n\n\nCode\ngtemp_tsibble_simple &lt;- tsbox::ts_tsibble(gtemp_both_ts)\ntsbox::ts_ts(gtemp_tsibble_simple)\n\n\nTime Series:\nStart = 1850 \nEnd = 2023 \nFrequency = 1 \n  [1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16 -0.29 -0.32 -0.19 -0.04 -0.19 -0.27\n [13] -0.27 -0.12 -0.17 -0.17 -0.06 -0.20 -0.09 -0.14 -0.04  0.00 -0.20 -0.25\n [25] -0.28 -0.21 -0.15  0.04  0.27 -0.03 -0.10 -0.07 -0.01 -0.17 -0.30 -0.26\n [37] -0.26 -0.26 -0.33  0.06 -0.22 -0.20 -0.26 -0.28 -0.15 -0.30 -0.15 -0.13\n [49] -0.47 -0.30 -0.03  0.04 -0.26 -0.16 -0.53 -0.36 -0.19 -0.25 -0.51 -0.52\n [61] -0.51 -0.58 -0.32 -0.39 -0.18 -0.05 -0.26 -0.64 -0.28 -0.19 -0.11 -0.23\n [73] -0.11 -0.33 -0.07 -0.26  0.09 -0.33 -0.23 -0.31 -0.08 -0.06 -0.13 -0.25\n [85] -0.30 -0.13 -0.20 -0.18  0.06 -0.16  0.13  0.11  0.08 -0.02  0.30  0.09\n [97]  0.02  0.05 -0.21  0.04 -0.08 -0.16 -0.03  0.15 -0.14 -0.29 -0.16 -0.09\n[109]  0.12  0.19 -0.25  0.10  0.16 -0.13 -0.15 -0.11 -0.03  0.05  0.17  0.08\n[121]  0.07 -0.09  0.06  0.34 -0.01  0.11 -0.13  0.24  0.22  0.20  0.31  0.45\n[133]  0.11  0.44  0.28  0.25  0.33  0.15  0.46  0.36  0.78  0.38  0.45  0.38\n[145]  0.30  0.49  0.36  0.51  0.68  0.39  0.59  0.57  0.85  0.61  0.66  0.76\n[157]  0.67  0.69  0.74  0.54  0.90  0.68  0.54  0.68  0.82  0.97  1.35  1.17\n[169]  0.93  1.16  1.16  0.88  1.11  1.24\n\n\n\n\nThe main lesson is that conversion is often unavoidable when combining packages. A representation is therefore not only a storage choice, but also a gateway to a particular computational ecosystem.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#recipe-8-choose-a-representation-for-a-task",
+    "href": "representations.html#recipe-8-choose-a-representation-for-a-task",
+    "title": "3  Time Series Representations",
+    "section": "3.10 Recipe 8: Choose a Representation for a Task",
+    "text": "3.10 Recipe 8: Choose a Representation for a Task\nThis final recipe synthesizes the chapter and turns the comparison into a practical decision guide.\n\nOption 8A: Use ts whenOption 8B: Use zoo or xts whenOption 8C: Use tsibble whenOption 8D: Use data frames and tsbox whenDiscussion\n\n\n\nthe data are regular;\nthe focus is on classical time series methods;\ncompact storage is sufficient.\n\n\n\n\nthe index should be explicit;\ndates or date-times matter;\nirregularity is possible;\nthe workflow is finance- or index-oriented.\n\n\n\n\nthe workflow is tidyverse-oriented;\nmultiple series must be managed together;\nexplicit keys and indices are desirable;\nmodern forecasting pipelines are expected.\n\n\n\n\nimport/export interoperability is central;\nthe original files are not yet in a time-series structure;\nconversion between formats is part of the workflow.\n\n\n\nA useful decision sequence is:\n\nWhere does the data come from?\nIs the index regular or irregular?\nAre there one or many series?\nWhich ecosystem will be used next: base R, indexed objects, or tidy forecasting tools?",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "representations.html#summary",
+    "href": "representations.html#summary",
+    "title": "3  Time Series Representations",
+    "section": "3.11 Summary",
+    "text": "3.11 Summary\nThis chapter compared multiple ways of representing time series in R while keeping the same global temperature example throughout. The use of tabsets makes the alternatives easier to compare side by side: direct package datasets, plain vectors and data frames, classical ts objects, zoo/xts, tidy tsibbles, and tsbox conversions.\nThe chapter also emphasized an important practical point: representation choices begin at import time. Reading data from CSV, RDS, text, or Excel is only the first step; the crucial second step is converting the imported values into a structure that supports the plotting, analysis, and modeling workflow that follows.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Time Series Representations</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html",
+    "href": "plotting.html",
+    "title": "4  Plotting Time Series",
+    "section": "",
+    "text": "4.1 Introduction\nVisualization is often the first step in understanding a time series. Different R frameworks provide different plotting idioms and capabilities.",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-1-plot-a-basic-time-series-with-base-r",
+    "href": "plotting.html#recipe-1-plot-a-basic-time-series-with-base-r",
+    "title": "4  Plotting Time Series",
+    "section": "4.2 Recipe 1: Plot a Basic Time Series with Base R",
+    "text": "4.2 Recipe 1: Plot a Basic Time Series with Base R",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-2-plot-a-ts-object",
+    "href": "plotting.html#recipe-2-plot-a-ts-object",
+    "title": "4  Plotting Time Series",
+    "section": "4.3 Recipe 2: Plot a ts Object",
+    "text": "4.3 Recipe 2: Plot a ts Object",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-3-plot-a-zoo-time-series",
+    "href": "plotting.html#recipe-3-plot-a-zoo-time-series",
+    "title": "4  Plotting Time Series",
+    "section": "4.4 Recipe 3: Plot a zoo Time Series",
+    "text": "4.4 Recipe 3: Plot a zoo Time Series",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-4-plot-an-xts-time-series",
+    "href": "plotting.html#recipe-4-plot-an-xts-time-series",
+    "title": "4  Plotting Time Series",
+    "section": "4.5 Recipe 4: Plot an xts Time Series",
+    "text": "4.5 Recipe 4: Plot an xts Time Series",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-5-plot-a-tsibble-with-autoplot",
+    "href": "plotting.html#recipe-5-plot-a-tsibble-with-autoplot",
+    "title": "4  Plotting Time Series",
+    "section": "4.6 Recipe 5: Plot a tsibble with autoplot()",
+    "text": "4.6 Recipe 5: Plot a tsibble with autoplot()",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-6-compare-multiple-series-in-a-single-plot",
+    "href": "plotting.html#recipe-6-compare-multiple-series-in-a-single-plot",
+    "title": "4  Plotting Time Series",
+    "section": "4.7 Recipe 6: Compare Multiple Series in a Single Plot",
+    "text": "4.7 Recipe 6: Compare Multiple Series in a Single Plot",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "plotting.html#recipe-7-visualize-time-series-clearly-and-consistently",
+    "href": "plotting.html#recipe-7-visualize-time-series-clearly-and-consistently",
+    "title": "4  Plotting Time Series",
+    "section": "4.8 Recipe 7: Visualize Time Series Clearly and Consistently",
+    "text": "4.8 Recipe 7: Visualize Time Series Clearly and Consistently\n``",
+    "crumbs": [
+      "Foundations",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html",
+    "href": "analysis.html",
+    "title": "5  Time Series Analysis",
+    "section": "",
+    "text": "5.1 Introduction\nA time series can often be understood in terms of recurring structural components. This chapter introduces the main conceptual decomposition frameworks.",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-1-identify-trend-in-a-time-series",
+    "href": "analysis.html#recipe-1-identify-trend-in-a-time-series",
+    "title": "5  Time Series Analysis",
+    "section": "5.2 Recipe 1: Identify Trend in a Time Series",
+    "text": "5.2 Recipe 1: Identify Trend in a Time Series",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-2-identify-seasonality-in-a-time-series",
+    "href": "analysis.html#recipe-2-identify-seasonality-in-a-time-series",
+    "title": "5  Time Series Analysis",
+    "section": "5.3 Recipe 2: Identify Seasonality in a Time Series",
+    "text": "5.3 Recipe 2: Identify Seasonality in a Time Series",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-3-identify-irregular-variation",
+    "href": "analysis.html#recipe-3-identify-irregular-variation",
+    "title": "5  Time Series Analysis",
+    "section": "5.4 Recipe 3: Identify Irregular Variation",
+    "text": "5.4 Recipe 3: Identify Irregular Variation",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-4-describe-a-time-series-with-an-additive-model",
+    "href": "analysis.html#recipe-4-describe-a-time-series-with-an-additive-model",
+    "title": "5  Time Series Analysis",
+    "section": "5.5 Recipe 4: Describe a Time Series with an Additive Model",
+    "text": "5.5 Recipe 4: Describe a Time Series with an Additive Model",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-5-describe-a-time-series-with-a-multiplicative-model",
+    "href": "analysis.html#recipe-5-describe-a-time-series-with-a-multiplicative-model",
+    "title": "5  Time Series Analysis",
+    "section": "5.6 Recipe 5: Describe a Time Series with a Multiplicative Model",
+    "text": "5.6 Recipe 5: Describe a Time Series with a Multiplicative Model",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-6-decide-between-additive-and-multiplicative-structure",
+    "href": "analysis.html#recipe-6-decide-between-additive-and-multiplicative-structure",
+    "title": "5  Time Series Analysis",
+    "section": "5.7 Recipe 6: Decide Between Additive and Multiplicative Structure",
+    "text": "5.7 Recipe 6: Decide Between Additive and Multiplicative Structure",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "analysis.html#recipe-7-interpret-the-components-of-a-time-series",
+    "href": "analysis.html#recipe-7-interpret-the-components-of-a-time-series",
+    "title": "5  Time Series Analysis",
+    "section": "5.8 Recipe 7: Interpret the Components of a Time Series",
+    "text": "5.8 Recipe 7: Interpret the Components of a Time Series",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Time Series Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "forecasting.html",
+    "href": "forecasting.html",
+    "title": "Time Series Analysis with R",
+    "section": "",
+    "text": "# Forecasting\n## Introduction\nForecasting is one of the main objectives of time series analysis.\nIn R, both classical and tidy workflows are available.\n## Recipe 1: Define a Forecasting Task\n## Recipe 2: Produce a Forecast with the `forecast` Package\n## Recipe 3: Produce a Forecast with the `fable` Package\n## Recipe 4: Compare Forecasts from Different Approaches\n## Recipe 5: Visualize Forecasts and Prediction Intervals\n## Recipe 6: Choose Between `forecast` and `fable`\n## Recipe 7: Interpret and Communicate Forecast Results",
+    "crumbs": [
+      "Analysis and Forecasting",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>forecasting.html</span>"
     ]
   }
 ]

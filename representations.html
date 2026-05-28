@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Time Series Representations – Time Series Analysis with R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./plotting.html" rel="next">
+<link href="./basics.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-5ccb035bea26c1e21f80f44cf7c27909.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./basics.html">Foundations</a></li><li class="breadcrumb-item"><a href="./representations.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Time Series Representations</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Time Series Analysis with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Time Series with R: A Recipe-Based Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Foundations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./representations.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Time Series Representations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./plotting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Plotting Time Series</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Analysis and Forecasting</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Time Series Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./forecasting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">forecasting.html</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">3.1</span> Introduction</a></li>
+  <li><a href="#time-series-from-an-r-package" id="toc-time-series-from-an-r-package" class="nav-link" data-scroll-target="#time-series-from-an-r-package"><span class="header-section-number">3.2</span> Time Series From an R Package</a></li>
+  <li><a href="#from-plain-data" id="toc-from-plain-data" class="nav-link" data-scroll-target="#from-plain-data"><span class="header-section-number">3.3</span> From Plain Data …</a></li>
+  <li><a href="#time-series-in-various-formats" id="toc-time-series-in-various-formats" class="nav-link" data-scroll-target="#time-series-in-various-formats"><span class="header-section-number">3.4</span> Time Series in Various Formats</a></li>
+  <li><a href="#recipe-4-import-time-series-data-from-different-file-types" id="toc-recipe-4-import-time-series-data-from-different-file-types" class="nav-link" data-scroll-target="#recipe-4-import-time-series-data-from-different-file-types"><span class="header-section-number">3.6</span> Recipe 4: Import Time Series Data from Different File Types</a></li>
+  <li><a href="#recipe-5-convert-imported-data-into-time-series-objects" id="toc-recipe-5-convert-imported-data-into-time-series-objects" class="nav-link" data-scroll-target="#recipe-5-convert-imported-data-into-time-series-objects"><span class="header-section-number">3.7</span> Recipe 5: Convert Imported Data into Time-Series Objects</a></li>
+  <li><a href="#recipe-6-represent-multiple-measurements-at-each-time-point" id="toc-recipe-6-represent-multiple-measurements-at-each-time-point" class="nav-link" data-scroll-target="#recipe-6-represent-multiple-measurements-at-each-time-point"><span class="header-section-number">3.8</span> Recipe 6: Represent Multiple Measurements at Each Time Point</a></li>
+  <li><a href="#recipe-7-convert-between-representations" id="toc-recipe-7-convert-between-representations" class="nav-link" data-scroll-target="#recipe-7-convert-between-representations"><span class="header-section-number">3.9</span> Recipe 7: Convert Between Representations</a></li>
+  <li><a href="#recipe-8-choose-a-representation-for-a-task" id="toc-recipe-8-choose-a-representation-for-a-task" class="nav-link" data-scroll-target="#recipe-8-choose-a-representation-for-a-task"><span class="header-section-number">3.10</span> Recipe 8: Choose a Representation for a Task</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">3.11</span> Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./basics.html">Foundations</a></li><li class="breadcrumb-item"><a href="./representations.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Time Series Representations</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Time Series Representations</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">3.1</span> Introduction</h2>
+<p>A short presentation of the main main ways in which time series can be represented in R, with a practical approach: the same underlying time series data can be stored as a plain vector, a data frame, a classical <code>ts</code> object, a <code>zoo</code>/<code>xts</code> indexed object, or a <code>tsibble</code>. Additionally real work often requires importing data from files or packages and converting between various formats.</p>
+<p>For an easier comparison, we’re using the <strong>global temperature anomaly datasets</strong>: <code>gtemp_both_ts</code>, <code>gtemp_land_ts</code>, and <code>gtemp_ocean_ts</code> from the <code>timeSeriesDataSets</code> package.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter is organized by representational task rather than by package. Each recipe uses a <strong>tabset</strong> so the reader can compare alternative approaches side by side.</p>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xts)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsibble)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsbox)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(timeSeriesDataSets)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Running example datasets</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># gtemp_both_ts  : global land + ocean temperature </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># gtemp_land_ts  : global land temperature </span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># gtemp_ocean_ts : global ocean temperature </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># additional datasets are available in R (`datasets` package)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="time-series-from-an-r-package" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="time-series-from-an-r-package"><span class="header-section-number">3.2</span> Time Series From an R Package</h2>
+<p>One of the simplest import path: load a time series object directly from an installed package (<code>timeSeriesDataSets</code>).</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><code>gtemp_both_ts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><code>gtemp_land_ts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href=""><code>gtemp_ocean_ts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Functions</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_both_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ts"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">start</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1850    1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">end</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2023    1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frequency</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 1855 
+Frequency = 1 
+[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_land_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_land_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ts"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">start</span>(gtemp_land_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1850    1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">end</span>(gtemp_land_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2023    1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frequency</span>(gtemp_land_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_land_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 1855 
+Frequency = 1 
+[1] -0.5 -0.6 -0.5 -0.5 -0.2 -0.5</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_ocean_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_ocean_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ts"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">start</span>(gtemp_ocean_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1850    1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">end</span>(gtemp_ocean_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2023    1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frequency</span>(gtemp_ocean_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_ocean_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 1855 
+Frequency = 1 
+[1] -0.12 -0.08 -0.14  0.04  0.04  0.00</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use data() to load `dataset_name` -- this does not exist!</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dataset_name, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>) </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># simple class information, should return `ts`</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dataset_name) </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Time of first observation (e.g., year) for a time-series</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">start</span>(dataset_name) </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Time of last observation (e.g., year) for a time-series</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="fu">end</span>(dataset_name) <span class="co"># Last recorded index (year)</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co"># The number of samples per unit time </span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="fu">frequency</span>(dataset_name) </span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Also check `time`, `cycle`, `deltat`</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co">#First recorded data; Use `tail` for last recorded data</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dataset_name) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Notice
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>All three datasets are already <code>ts</code> objects;</p></li>
+<li><p>The datasets from <code>timeSeriesDataSets</code> are immediately ready for time-series-aware plotting and modeling;</p></li>
+<li><p>Using package-provided datasets, as they are convenient for teaching.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="from-plain-data" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="from-plain-data"><span class="header-section-number">3.3</span> From Plain Data …</h2>
+<p>Start from existing datasets, reconstruct it from more primitive forms.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Vector</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Data frame</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Tibble</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Plot the data</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>As a numeric vector only. Extract the numeric values (<code>as.numeric</code>), and check the content.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>gtemp_vec <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(gtemp_both_ts)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_vec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_vec)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>As data frames, with explicit year column. Extract both dimensions (with <code>time</code> and <code>as.numeric</code>), reconstruct with tibble.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>gtemp_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">time</span>(gtemp_both_ts),</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">anomaly =</span> <span class="fu">as.numeric</span>(gtemp_both_ts)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># also, year = as.numeric(time(gtemp_both_ts))</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>gtemp_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 174 × 2
+    year anomaly
+   &lt;dbl&gt;   &lt;dbl&gt;
+ 1  1850   -0.24
+ 2  1851   -0.25
+ 3  1852   -0.27
+ 4  1853   -0.15
+ 5  1854   -0.05
+ 6  1855   -0.16
+ 7  1856   -0.29
+ 8  1857   -0.32
+ 9  1858   -0.19
+10  1859   -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Tibble, with explicit year column (using <code>as_tibble</code>)</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>gtemp_tbl <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(gtemp_df)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>gtemp_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 174 × 2
+    year anomaly
+   &lt;dbl&gt;   &lt;dbl&gt;
+ 1  1850   -0.24
+ 2  1851   -0.25
+ 3  1852   -0.27
+ 4  1853   -0.15
+ 5  1854   -0.05
+ 6  1855   -0.16
+ 7  1856   -0.29
+ 8  1857   -0.32
+ 9  1858   -0.19
+10  1859   -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gtemp_df, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> anomaly)) <span class="sc">+</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Global Temperature Anomalies as a Data Frame"</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Temperature anomaly"</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-rep-gtemp-df-ggplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rep-gtemp-df-ggplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="representations_files/figure-html/fig-rep-gtemp-df-ggplot-1.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rep-gtemp-df-ggplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.1: Global temperature anomalies represented as a plain data frame and plotted with <code>ggplot2</code>. Time is stored explicitly in the <code>year</code> column rather than in a specialized time-series object.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Comment
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These options illustrate the baseline representations that are easiest to inspect, reshape, and export. The trade-off is that temporal semantics are not enforced automatically. If unsure, consider the <code>tsbox</code> library.</p>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsbox)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibbletime)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_land_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_ocean_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>x.ts <span class="ot">&lt;-</span> <span class="fu">ts_c</span>(gtemp_land_ts, gtemp_ocean_ts)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 1855 
+Frequency = 1 
+     gtemp_land_ts gtemp_ocean_ts
+1850          -0.5          -0.12
+1851          -0.6          -0.08
+1852          -0.5          -0.14
+1853          -0.5           0.04
+1854          -0.2           0.04
+1855          -0.5           0.00</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>x.xts <span class="ot">&lt;-</span> <span class="fu">ts_xts</span>(x.ts)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.xts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           gtemp_land_ts gtemp_ocean_ts
+1850-01-01          -0.5          -0.12
+1851-01-01          -0.6          -0.08
+1852-01-01          -0.5          -0.14
+1853-01-01          -0.5           0.04
+1854-01-01          -0.2           0.04
+1855-01-01          -0.5           0.00</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>x.df <span class="ot">&lt;-</span> <span class="fu">ts_df</span>(x.xts)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             id       time value
+1 gtemp_land_ts 1850-01-01  -0.5
+2 gtemp_land_ts 1851-01-01  -0.6
+3 gtemp_land_ts 1852-01-01  -0.5
+4 gtemp_land_ts 1853-01-01  -0.5
+5 gtemp_land_ts 1854-01-01  -0.2
+6 gtemp_land_ts 1855-01-01  -0.5</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>x.dt <span class="ot">&lt;-</span> <span class="fu">ts_dt</span>(x.df)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.dt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              id       time value
+          &lt;char&gt;     &lt;Date&gt; &lt;num&gt;
+1: gtemp_land_ts 1850-01-01  -0.5
+2: gtemp_land_ts 1851-01-01  -0.6
+3: gtemp_land_ts 1852-01-01  -0.5
+4: gtemp_land_ts 1853-01-01  -0.5
+5: gtemp_land_ts 1854-01-01  -0.2
+6: gtemp_land_ts 1855-01-01  -0.5</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>x.tbl <span class="ot">&lt;-</span> <span class="fu">ts_tbl</span>(x.dt)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.tbl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  id            time       value
+  &lt;chr&gt;         &lt;date&gt;     &lt;dbl&gt;
+1 gtemp_land_ts 1850-01-01  -0.5
+2 gtemp_land_ts 1851-01-01  -0.6
+3 gtemp_land_ts 1852-01-01  -0.5
+4 gtemp_land_ts 1853-01-01  -0.5
+5 gtemp_land_ts 1854-01-01  -0.2
+6 gtemp_land_ts 1855-01-01  -0.5</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>x.zoo <span class="ot">&lt;-</span> <span class="fu">ts_zoo</span>(x.tbl)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.zoo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           gtemp_land_ts gtemp_ocean_ts
+1850-01-01          -0.5          -0.12
+1851-01-01          -0.6          -0.08
+1852-01-01          -0.5          -0.14
+1853-01-01          -0.5           0.04
+1854-01-01          -0.2           0.04
+1855-01-01          -0.5           0.00</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>x.tsibble <span class="ot">&lt;-</span> <span class="fu">ts_tsibble</span>(x.zoo)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.tsibble)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 6 x 3 [1D]
+# Key:       id [1]
+  id            time       value
+  &lt;chr&gt;         &lt;date&gt;     &lt;dbl&gt;
+1 gtemp_land_ts 1850-01-01  -0.5
+2 gtemp_land_ts 1851-01-01  -0.6
+3 gtemp_land_ts 1852-01-01  -0.5
+4 gtemp_land_ts 1853-01-01  -0.5
+5 gtemp_land_ts 1854-01-01  -0.2
+6 gtemp_land_ts 1855-01-01  -0.5</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>x.tibbletime <span class="ot">&lt;-</span> <span class="fu">ts_tibbletime</span>(x.tsibble)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.tibbletime)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A time tibble: 6 × 3
+# Index:         time
+  time       gtemp_land_ts gtemp_ocean_ts
+  &lt;date&gt;             &lt;dbl&gt;          &lt;dbl&gt;
+1 1850-01-01          -0.5          -0.12
+2 1851-01-01          -0.6          -0.08
+3 1852-01-01          -0.5          -0.14
+4 1853-01-01          -0.5           0.04
+5 1854-01-01          -0.2           0.04
+6 1855-01-01          -0.5           0   </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>x.timeSeries <span class="ot">&lt;-</span> <span class="fu">ts_timeSeries</span>(x.tibbletime)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.timeSeries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>GMT
+           gtemp_land_ts gtemp_ocean_ts
+1850-01-01          -0.5          -0.12
+1851-01-01          -0.6          -0.08
+1852-01-01          -0.5          -0.14
+1853-01-01          -0.5           0.04
+1854-01-01          -0.2           0.04
+1855-01-01          -0.5           0.00</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">ts_ts</span>(x.timeSeries), x.ts)  <span class="co"># TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="time-series-in-various-formats" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="time-series-in-various-formats"><span class="header-section-number">3.4</span> Time Series in Various Formats</h2>
+<p>Using the same global temperature series, <code>gtemp_both_ts</code>, and storing them in several R time-series representations.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href=""><code>ts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href=""><code>zoo</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href=""><code>xts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false" href=""><code>tsibble</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-5" role="tab" aria-controls="tabset-3-5" aria-selected="false" href="">Plot the <code>ts</code> object with <code>ggplot2::autoplot()</code></a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>gtemp_ts <span class="ot">&lt;-</span> gtemp_both_ts</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ts"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 1855 
+Frequency = 1 
+[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16</code></pre>
+</div>
+</div>
+<p>Notice that this is the native format for <code>timeSeriesDataSets</code>!</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>gtemp_zoo <span class="ot">&lt;-</span> <span class="fu">zoo</span>(</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(gtemp_both_ts),</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">order.by =</span> <span class="fu">as.numeric</span>(<span class="fu">time</span>(gtemp_both_ts))</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_zoo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "zoo"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_zoo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1850  1851  1852  1853  1854  1855 
+-0.24 -0.25 -0.27 -0.15 -0.05 -0.16 </code></pre>
+</div>
+</div>
+<p>For <code>zoo</code> and <code>xts</code>, we have to manipulate the different dimensions of data.</p>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>gtemp_years <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fu">as.numeric</span>(<span class="fu">time</span>(gtemp_both_ts)))</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>gtemp_xts <span class="ot">&lt;-</span> <span class="fu">xts</span>(</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>(gtemp_both_ts),</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">order.by =</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(gtemp_years, <span class="st">"-01-01"</span>))</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_xts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "xts" "zoo"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_xts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]
+1850-01-01 -0.24
+1851-01-01 -0.25
+1852-01-01 -0.27
+1853-01-01 -0.15
+1854-01-01 -0.05
+1855-01-01 -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>gtemp_tsibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> gtemp_years,</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">anomaly =</span> <span class="fu">as.numeric</span>(gtemp_both_ts)</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> year)</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gtemp_tsibble)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_ts"     "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>gtemp_tsibble</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 174 x 2 [1Y]
+    year anomaly
+   &lt;dbl&gt;   &lt;dbl&gt;
+ 1  1850   -0.24
+ 2  1851   -0.25
+ 3  1852   -0.27
+ 4  1853   -0.15
+ 5  1854   -0.05
+ 6  1855   -0.16
+ 7  1856   -0.29
+ 8  1857   -0.32
+ 9  1858   -0.19
+10  1859   -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+<section id="tsbox" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="tsbox"><span class="header-section-number">3.5</span> <code>tsbox</code></h2>
+<p>With <code>tsbox</code>, you have some handy conversions, from/to any format (supported by the package). Just check if your results are the same, for the various options.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>tsb_tsibble <span class="ot">&lt;-</span> <span class="fu">ts_tsibble</span>(gtemp_both_ts) </span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tsb_tsibble)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_ts"     "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>tsb_tsibble</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 174 x 2 [1D]
+   time       value
+   &lt;date&gt;     &lt;dbl&gt;
+ 1 1850-01-01 -0.24
+ 2 1851-01-01 -0.25
+ 3 1852-01-01 -0.27
+ 4 1853-01-01 -0.15
+ 5 1854-01-01 -0.05
+ 6 1855-01-01 -0.16
+ 7 1856-01-01 -0.29
+ 8 1857-01-01 -0.32
+ 9 1858-01-01 -0.19
+10 1859-01-01 -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</section>
+</div>
+<div id="tabset-3-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-5-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use ggfortify method via ggplot2::autoplot</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This is more Quarto-safe than relying on a plain autoplot() call.</span></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">autoplot</span>(</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>  gtemp_ts,</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ts.colour =</span> <span class="st">"darkorange"</span>,</span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ts.size =</span> <span class="fl">0.8</span>,</span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Global Temperature Anomalies as a ts Object"</span>,</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Year"</span>,</span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Temperature anomaly"</span></span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-rep-gtemp-ts-autoplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rep-gtemp-ts-autoplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="representations_files/figure-html/fig-rep-gtemp-ts-autoplot-1.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rep-gtemp-ts-autoplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.2: The <code>gtemp_both_ts</code> series plotted as a classical <code>ts</code> object. In this case, the temporal structure is embedded directly in the object and handled automatically by time-series-aware plotting methods.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Check the various conversion formats supported by <code>tsbox</code> and repeat previous transformations. Try to plot the auto-generated outputs (check if <code>plot</code>, <code>ggplot</code>, or <code>autoplot</code> is available for your dataset)</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Notice
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We can view the major representational philosophies for time series:</p>
+<ul>
+<li><p><code>ts</code>: classical approach (and compact);</p></li>
+<li><p><code>xts</code> (also, <code>zoo</code>): indexed and especially useful when time stamp matter;</p></li>
+<li><p><code>tsibble</code>: tidy and explicit, well suited to modern pipelines.</p></li>
+<li><p><code>tsbox</code>: quick and dirty, when you’re happy with automatic conversions.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="recipe-4-import-time-series-data-from-different-file-types" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="recipe-4-import-time-series-data-from-different-file-types"><span class="header-section-number">3.6</span> Recipe 4: Import Time Series Data from Different File Types</h2>
+<p>In practice, data rarely start as ready-made R time series objects. This recipe shows several common entry points using the same temperature example.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Option 4A: Read from CSV</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Option 4B: Read from RDS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Option 4C: Read from a plain text file with <code>scan()</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">Option 4D: Read from Excel (template code)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-5" role="tab" aria-controls="tabset-4-5" aria-selected="false" href="">Discussion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate a CSV import using the running example</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>csv_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".csv"</span>)</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(gtemp_df, csv_path, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>gtemp_from_csv <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(csv_path)</span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_from_csv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  year anomaly
+1 1850   -0.24
+2 1851   -0.25
+3 1852   -0.27
+4 1853   -0.15
+5 1854   -0.05
+6 1855   -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>rds_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".rds"</span>)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(gtemp_df, rds_path)</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>gtemp_from_rds <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(rds_path)</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_from_rds)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+   year anomaly
+  &lt;dbl&gt;   &lt;dbl&gt;
+1  1850   -0.24
+2  1851   -0.25
+3  1852   -0.27
+4  1853   -0.15
+5  1854   -0.05
+6  1855   -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>text_path <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".txt"</span>)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write</span>(<span class="fu">as.numeric</span>(gtemp_both_ts), text_path)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>gtemp_from_text <span class="ot">&lt;-</span> <span class="fu">scan</span>(text_path, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_from_text)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Requires readxl (and a real Excel file in the project)</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>gtemp_from_excel <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/gtemp_both.xlsx"</span>)</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_from_excel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-4-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-5-tab">
+<p>This recipe distinguishes two separate steps:</p>
+<ol type="1">
+<li><strong>importing the raw data</strong> from some storage format;</li>
+<li><strong>converting the imported object</strong> into a time-series representation appropriate for analysis.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="recipe-5-convert-imported-data-into-time-series-objects" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="recipe-5-convert-imported-data-into-time-series-objects"><span class="header-section-number">3.7</span> Recipe 5: Convert Imported Data into Time-Series Objects</h2>
+<p>Once the data are loaded into R, the next step is usually to convert them into a dedicated time-series representation.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Option 5A: Data frame to <code>ts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Option 5B: Data frame to <code>zoo</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Option 5C: Data frame to <code>xts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-4" role="tab" aria-controls="tabset-5-4" aria-selected="false" href="">Option 5D: Data frame to <code>tsibble</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-5" role="tab" aria-controls="tabset-5-5" aria-selected="false" href="">Discussion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>gtemp_ts_from_df <span class="ot">&lt;-</span> <span class="fu">ts</span>(</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  gtemp_from_csv<span class="sc">$</span>anomaly,</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">min</span>(gtemp_from_csv<span class="sc">$</span>year),</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">frequency =</span> <span class="dv">1</span></span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_ts_from_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 1855 
+Frequency = 1 
+[1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>gtemp_zoo_from_df <span class="ot">&lt;-</span> <span class="fu">zoo</span>(</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>  gtemp_from_csv<span class="sc">$</span>anomaly,</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">order.by =</span> gtemp_from_csv<span class="sc">$</span>year</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_zoo_from_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1850  1851  1852  1853  1854  1855 
+-0.24 -0.25 -0.27 -0.15 -0.05 -0.16 </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>gtemp_xts_from_df <span class="ot">&lt;-</span> <span class="fu">xts</span>(</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  gtemp_from_csv<span class="sc">$</span>anomaly,</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">order.by =</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(gtemp_from_csv<span class="sc">$</span>year, <span class="st">"-01-01"</span>))</span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gtemp_xts_from_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]
+1850-01-01 -0.24
+1851-01-01 -0.25
+1852-01-01 -0.27
+1853-01-01 -0.15
+1854-01-01 -0.05
+1855-01-01 -0.16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>gtemp_tsibble_from_df <span class="ot">&lt;-</span> <span class="fu">as_tsibble</span>(gtemp_from_csv, <span class="at">index =</span> year)</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>gtemp_tsibble_from_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 174 x 2 [1Y]
+    year anomaly
+   &lt;int&gt;   &lt;dbl&gt;
+ 1  1850   -0.24
+ 2  1851   -0.25
+ 3  1852   -0.27
+ 4  1853   -0.15
+ 5  1854   -0.05
+ 6  1855   -0.16
+ 7  1856   -0.29
+ 8  1857   -0.32
+ 9  1858   -0.19
+10  1859   -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-5-tab">
+<p>These conversions make the difference between <strong>tabular storage</strong> and <strong>time-aware analysis</strong> explicit. The same imported values can support very different workflows depending on how they are encoded after import.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="recipe-6-represent-multiple-measurements-at-each-time-point" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="recipe-6-represent-multiple-measurements-at-each-time-point"><span class="header-section-number">3.8</span> Recipe 6: Represent Multiple Measurements at Each Time Point</h2>
+<p>The global temperature datasets also allow a natural comparison between univariate and multiple-series representations.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Option 6A: Wide data frame</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">Option 6B: Multivariate <code>ts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-3" role="tab" aria-controls="tabset-6-3" aria-selected="false" href="">Option 6C: Multivariate <code>xts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-4" role="tab" aria-controls="tabset-6-4" aria-selected="false" href="">Option 6D: Long/keyed <code>tsibble</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-5" role="tab" aria-controls="tabset-6-5" aria-selected="false" href="">Option 6E: Plot multiple measurements</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-6" role="tab" aria-controls="tabset-6-6" aria-selected="false" href="">Discussion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>gtemp_multi_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> gtemp_years,</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">land_ocean =</span> <span class="fu">as.numeric</span>(gtemp_both_ts),</span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">land =</span> <span class="fu">as.numeric</span>(gtemp_land_ts),</span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ocean =</span> <span class="fu">as.numeric</span>(gtemp_ocean_ts)</span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a>gtemp_multi_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 174 × 4
+    year land_ocean  land ocean
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1  1850      -0.24  -0.5 -0.12
+ 2  1851      -0.25  -0.6 -0.08
+ 3  1852      -0.27  -0.5 -0.14
+ 4  1853      -0.15  -0.5  0.04
+ 5  1854      -0.05  -0.2  0.04
+ 6  1855      -0.16  -0.5  0   
+ 7  1856      -0.29  -0.8 -0.05
+ 8  1857      -0.32  -0.4 -0.27
+ 9  1858      -0.19  -0.4 -0.09
+10  1859      -0.04  -0.1  0.01
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>gtemp_multi_ts <span class="ot">&lt;-</span> <span class="fu">ts</span>(</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(</span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">land_ocean =</span> <span class="fu">as.numeric</span>(gtemp_both_ts),</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">land =</span> <span class="fu">as.numeric</span>(gtemp_land_ts),</span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ocean =</span> <span class="fu">as.numeric</span>(gtemp_ocean_ts)</span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">start</span>(gtemp_both_ts),</span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">frequency =</span> <span class="fu">frequency</span>(gtemp_both_ts)</span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a>gtemp_multi_ts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 2023 
+Frequency = 1 
+     land_ocean  land ocean
+1850      -0.24 -0.50 -0.12
+1851      -0.25 -0.60 -0.08
+1852      -0.27 -0.50 -0.14
+1853      -0.15 -0.50  0.04
+1854      -0.05 -0.20  0.04
+1855      -0.16 -0.50  0.00
+1856      -0.29 -0.80 -0.05
+1857      -0.32 -0.40 -0.27
+1858      -0.19 -0.40 -0.09
+1859      -0.04 -0.10  0.01
+1860      -0.19 -0.70  0.06
+1861      -0.27 -0.20 -0.28
+1862      -0.27 -0.50 -0.16
+1863      -0.12 -0.20 -0.06
+1864      -0.17 -0.30 -0.11
+1865      -0.17 -0.60  0.04
+1866      -0.06 -0.40  0.12
+1867      -0.20 -0.60  0.01
+1868      -0.09 -0.30  0.02
+1869      -0.14 -0.50  0.02
+1870      -0.04 -0.20  0.07
+1871       0.00 -0.10  0.05
+1872      -0.20 -0.40 -0.07
+1873      -0.25 -0.30 -0.19
+1874      -0.28 -0.40 -0.19
+1875      -0.21 -0.50 -0.07
+1876      -0.15 -0.20 -0.10
+1877       0.04 -0.10  0.11
+1878       0.27  0.26  0.28
+1879      -0.03 -0.20  0.07
+1880      -0.10 -0.50  0.08
+1881      -0.07 -0.40  0.11
+1882      -0.01 -0.20  0.08
+1883      -0.17 -0.40 -0.05
+1884      -0.30 -0.70 -0.10
+1885      -0.26 -0.40 -0.18
+1886      -0.26 -0.50 -0.14
+1887      -0.26 -0.30 -0.20
+1888      -0.33 -0.70 -0.14
+1889       0.06  0.00  0.13
+1890      -0.22 -0.20 -0.23
+1891      -0.20 -0.30 -0.12
+1892      -0.26 -0.50 -0.12
+1893      -0.28 -0.40 -0.21
+1894      -0.15  0.10 -0.26
+1895      -0.30 -0.50 -0.20
+1896      -0.15 -0.50  0.04
+1897      -0.13 -0.70  0.12
+1898      -0.47 -1.10 -0.18
+1899      -0.30 -0.50 -0.18
+1900      -0.03  0.00 -0.01
+1901       0.04  0.21 -0.04
+1902      -0.26 -0.40 -0.17
+1903      -0.16  0.05 -0.26
+1904      -0.53 -0.60 -0.50
+1905      -0.36 -0.70 -0.20
+1906      -0.19 -0.30 -0.14
+1907      -0.25 -0.30 -0.20
+1908      -0.51 -0.80 -0.37
+1909      -0.52 -0.70 -0.41
+1910      -0.51 -0.50 -0.50
+1911      -0.58 -0.80 -0.47
+1912      -0.32 -0.70 -0.12
+1913      -0.39 -0.40 -0.34
+1914      -0.18 -0.10 -0.17
+1915      -0.05 -0.20  0.02
+1916      -0.26 -0.50 -0.16
+1917      -0.64 -1.00 -0.47
+1918      -0.28 -0.30 -0.24
+1919      -0.19 -0.50 -0.05
+1920      -0.11  0.05 -0.18
+1921      -0.23 -0.10 -0.26
+1922      -0.11  0.00 -0.12
+1923      -0.33 -0.30 -0.30
+1924      -0.07  0.01 -0.11
+1925      -0.26 -0.20 -0.28
+1926       0.09  0.53 -0.11
+1927      -0.33 -0.60 -0.20
+1928      -0.23 -0.20 -0.20
+1929      -0.31 -0.30 -0.32
+1930      -0.08  0.21 -0.20
+1931      -0.06 -0.10 -0.03
+1932      -0.13 -0.10 -0.11
+1933      -0.25 -0.30 -0.21
+1934      -0.30 -0.30 -0.28
+1935      -0.13  0.13 -0.24
+1936      -0.20 -0.30 -0.15
+1937      -0.18 -0.40 -0.06
+1938       0.06  0.38 -0.09
+1939      -0.16 -0.20 -0.10
+1940       0.13  0.06  0.17
+1941       0.11 -0.10  0.23
+1942       0.08 -0.10  0.19
+1943      -0.02  0.00 -0.01
+1944       0.30  0.36  0.27
+1945       0.09  0.00  0.16
+1946       0.02  0.00  0.03
+1947       0.05  0.32 -0.07
+1948      -0.21 -0.30 -0.17
+1949       0.04  0.24 -0.04
+1950      -0.08  0.00 -0.10
+1951      -0.16 -0.20 -0.13
+1952      -0.03 -0.30  0.11
+1953       0.15  0.33  0.06
+1954      -0.14 -0.30 -0.07
+1955      -0.29 -0.60 -0.12
+1956      -0.16 -0.20 -0.11
+1957      -0.09 -0.30  0.03
+1958       0.12  0.03  0.15
+1959       0.19  0.49  0.06
+1960      -0.25 -0.90  0.04
+1961       0.10  0.08  0.10
+1962       0.16  0.36  0.07
+1963      -0.13 -0.40  0.01
+1964      -0.15 -0.30 -0.06
+1965      -0.11 -0.10 -0.09
+1966      -0.03 -0.10  0.03
+1967       0.05  0.19 -0.02
+1968       0.17  0.80 -0.11
+1969       0.08 -0.20  0.25
+1970       0.07  0.00  0.12
+1971      -0.09  0.00 -0.10
+1972       0.06  0.13  0.03
+1973       0.34  0.61  0.23
+1974      -0.01  0.18 -0.09
+1975       0.11  0.32  0.02
+1976      -0.13 -0.20 -0.06
+1977       0.24  0.29  0.23
+1978       0.22  0.37  0.16
+1979       0.20  0.10  0.24
+1980       0.31  0.19  0.37
+1981       0.45  0.85  0.26
+1982       0.11  0.00  0.19
+1983       0.44  0.64  0.35
+1984       0.28  0.36  0.25
+1985       0.25  0.42  0.17
+1986       0.33  0.67  0.18
+1987       0.15 -0.20  0.33
+1988       0.46  0.51  0.44
+1989       0.36  0.66  0.23
+1990       0.78  1.61  0.41
+1991       0.38  0.45  0.34
+1992       0.45  0.78  0.31
+1993       0.38  0.64  0.26
+1994       0.30  0.41  0.26
+1995       0.49  0.75  0.37
+1996       0.36  0.44  0.33
+1997       0.51  0.81  0.38
+1998       0.68  0.94  0.56
+1999       0.39  0.36  0.40
+2000       0.59  1.14  0.34
+2001       0.57  0.85  0.44
+2002       0.85  1.58  0.53
+2003       0.61  0.84  0.50
+2004       0.66  1.02  0.50
+2005       0.76  1.36  0.50
+2006       0.67  1.20  0.43
+2007       0.69  1.27  0.43
+2008       0.74  1.65  0.33
+2009       0.54  0.83  0.42
+2010       0.90  1.54  0.61
+2011       0.68  1.27  0.41
+2012       0.54  0.93  0.37
+2013       0.68  1.10  0.49
+2014       0.82  1.52  0.51
+2015       0.97  1.76  0.61
+2016       1.35  2.50  0.83
+2017       1.17  2.15  0.73
+2018       0.93  1.63  0.61
+2019       1.16  2.14  0.72
+2020       1.16  1.95  0.81
+2021       0.88  1.58  0.57
+2022       1.11  2.13  0.65
+2023       1.24  2.26  0.78</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>gtemp_multi_xts <span class="ot">&lt;-</span> <span class="fu">xts</span>(</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>  gtemp_multi_df[, <span class="fu">c</span>(<span class="st">"land_ocean"</span>, <span class="st">"land"</span>, <span class="st">"ocean"</span>)],</span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">order.by =</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(gtemp_multi_df<span class="sc">$</span>year, <span class="st">"-01-01"</span>))</span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>gtemp_multi_xts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           land_ocean  land ocean
+1850-01-01      -0.24 -0.50 -0.12
+1851-01-01      -0.25 -0.60 -0.08
+1852-01-01      -0.27 -0.50 -0.14
+1853-01-01      -0.15 -0.50  0.04
+1854-01-01      -0.05 -0.20  0.04
+1855-01-01      -0.16 -0.50  0.00
+1856-01-01      -0.29 -0.80 -0.05
+1857-01-01      -0.32 -0.40 -0.27
+1858-01-01      -0.19 -0.40 -0.09
+1859-01-01      -0.04 -0.10  0.01
+       ...                       
+2014-01-01       0.82  1.52  0.51
+2015-01-01       0.97  1.76  0.61
+2016-01-01       1.35  2.50  0.83
+2017-01-01       1.17  2.15  0.73
+2018-01-01       0.93  1.63  0.61
+2019-01-01       1.16  2.14  0.72
+2020-01-01       1.16  1.95  0.81
+2021-01-01       0.88  1.58  0.57
+2022-01-01       1.11  2.13  0.65
+2023-01-01       1.24  2.26  0.78</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>gtemp_multi_tsibble <span class="ot">&lt;-</span> gtemp_multi_df <span class="sc">|&gt;</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(land_ocean, land, ocean),</span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"series"</span>,</span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"anomaly"</span></span>
+<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tsibble</span>(<span class="at">index =</span> year, <span class="at">key =</span> series)</span>
+<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-9"><a href="#cb104-9" aria-hidden="true" tabindex="-1"></a>gtemp_multi_tsibble</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 522 x 3 [1Y]
+# Key:       series [3]
+    year series anomaly
+   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;
+ 1  1850 land      -0.5
+ 2  1851 land      -0.6
+ 3  1852 land      -0.5
+ 4  1853 land      -0.5
+ 5  1854 land      -0.2
+ 6  1855 land      -0.5
+ 7  1856 land      -0.8
+ 8  1857 land      -0.4
+ 9  1858 land      -0.4
+10  1859 land      -0.1
+# ℹ 512 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-5-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gtemp_multi_tsibble, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> anomaly, <span class="at">color =</span> series)) <span class="sc">+</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Global Temperature Anomaly Series"</span>,</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Temperature anomaly"</span>,</span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Series"</span></span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-rep-gtemp-multi" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rep-gtemp-multi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="representations_files/figure-html/fig-rep-gtemp-multi-1.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rep-gtemp-multi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.3: Three related temperature anomaly series represented together: combined land-and-ocean, land-only, and ocean-only. This illustrates a case where each time point carries multiple measurements rather than a single scalar value.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-6-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-6-tab">
+<p>This recipe is useful for distinguishing:</p>
+<ul>
+<li><strong>multivariate storage</strong> (<code>mts</code>, wide <code>xts</code>),</li>
+<li><strong>multiple-series tidy storage</strong> (keyed <code>tsibble</code>), and</li>
+<li>a simple wide tabular representation intended for interoperability.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="recipe-7-convert-between-representations" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="recipe-7-convert-between-representations"><span class="header-section-number">3.9</span> Recipe 7: Convert Between Representations</h2>
+<p>Time-series analysis in R often requires jumping between frameworks.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Option 7A: Convert with <code>tsbox</code> to a tidy table</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Option 7B: Convert with <code>tsbox</code> to <code>xts</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">Option 7C: Convert with <code>tsbox</code> to <code>tsibble</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-4" role="tab" aria-controls="tabset-7-4" aria-selected="false" href="">Option 7D: Convert a <code>tsibble</code> back to another format</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-5" role="tab" aria-controls="tabset-7-5" aria-selected="false" href="">Discussion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>tsbox<span class="sc">::</span><span class="fu">ts_tbl</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 174 × 2
+   time       value
+   &lt;date&gt;     &lt;dbl&gt;
+ 1 1850-01-01 -0.24
+ 2 1851-01-01 -0.25
+ 3 1852-01-01 -0.27
+ 4 1853-01-01 -0.15
+ 5 1854-01-01 -0.05
+ 6 1855-01-01 -0.16
+ 7 1856-01-01 -0.29
+ 8 1857-01-01 -0.32
+ 9 1858-01-01 -0.19
+10 1859-01-01 -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>tsbox<span class="sc">::</span><span class="fu">ts_xts</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           value
+1850-01-01 -0.24
+1851-01-01 -0.25
+1852-01-01 -0.27
+1853-01-01 -0.15
+1854-01-01 -0.05
+1855-01-01 -0.16
+1856-01-01 -0.29
+1857-01-01 -0.32
+1858-01-01 -0.19
+1859-01-01 -0.04
+       ...      
+2014-01-01  0.82
+2015-01-01  0.97
+2016-01-01  1.35
+2017-01-01  1.17
+2018-01-01  0.93
+2019-01-01  1.16
+2020-01-01  1.16
+2021-01-01  0.88
+2022-01-01  1.11
+2023-01-01  1.24</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>tsbox<span class="sc">::</span><span class="fu">ts_tsibble</span>(gtemp_both_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tsibble: 174 x 2 [1D]
+   time       value
+   &lt;date&gt;     &lt;dbl&gt;
+ 1 1850-01-01 -0.24
+ 2 1851-01-01 -0.25
+ 3 1852-01-01 -0.27
+ 4 1853-01-01 -0.15
+ 5 1854-01-01 -0.05
+ 6 1855-01-01 -0.16
+ 7 1856-01-01 -0.29
+ 8 1857-01-01 -0.32
+ 9 1858-01-01 -0.19
+10 1859-01-01 -0.04
+# ℹ 164 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-4-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>gtemp_tsibble_simple <span class="ot">&lt;-</span> tsbox<span class="sc">::</span><span class="fu">ts_tsibble</span>(gtemp_both_ts)</span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>tsbox<span class="sc">::</span><span class="fu">ts_ts</span>(gtemp_tsibble_simple)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time Series:
+Start = 1850 
+End = 2023 
+Frequency = 1 
+  [1] -0.24 -0.25 -0.27 -0.15 -0.05 -0.16 -0.29 -0.32 -0.19 -0.04 -0.19 -0.27
+ [13] -0.27 -0.12 -0.17 -0.17 -0.06 -0.20 -0.09 -0.14 -0.04  0.00 -0.20 -0.25
+ [25] -0.28 -0.21 -0.15  0.04  0.27 -0.03 -0.10 -0.07 -0.01 -0.17 -0.30 -0.26
+ [37] -0.26 -0.26 -0.33  0.06 -0.22 -0.20 -0.26 -0.28 -0.15 -0.30 -0.15 -0.13
+ [49] -0.47 -0.30 -0.03  0.04 -0.26 -0.16 -0.53 -0.36 -0.19 -0.25 -0.51 -0.52
+ [61] -0.51 -0.58 -0.32 -0.39 -0.18 -0.05 -0.26 -0.64 -0.28 -0.19 -0.11 -0.23
+ [73] -0.11 -0.33 -0.07 -0.26  0.09 -0.33 -0.23 -0.31 -0.08 -0.06 -0.13 -0.25
+ [85] -0.30 -0.13 -0.20 -0.18  0.06 -0.16  0.13  0.11  0.08 -0.02  0.30  0.09
+ [97]  0.02  0.05 -0.21  0.04 -0.08 -0.16 -0.03  0.15 -0.14 -0.29 -0.16 -0.09
+[109]  0.12  0.19 -0.25  0.10  0.16 -0.13 -0.15 -0.11 -0.03  0.05  0.17  0.08
+[121]  0.07 -0.09  0.06  0.34 -0.01  0.11 -0.13  0.24  0.22  0.20  0.31  0.45
+[133]  0.11  0.44  0.28  0.25  0.33  0.15  0.46  0.36  0.78  0.38  0.45  0.38
+[145]  0.30  0.49  0.36  0.51  0.68  0.39  0.59  0.57  0.85  0.61  0.66  0.76
+[157]  0.67  0.69  0.74  0.54  0.90  0.68  0.54  0.68  0.82  0.97  1.35  1.17
+[169]  0.93  1.16  1.16  0.88  1.11  1.24</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-5-tab">
+<p>The main lesson is that conversion is often unavoidable when combining packages. A representation is therefore not only a storage choice, but also a gateway to a particular computational ecosystem.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="recipe-8-choose-a-representation-for-a-task" class="level2" data-number="3.10">
+<h2 data-number="3.10" class="anchored" data-anchor-id="recipe-8-choose-a-representation-for-a-task"><span class="header-section-number">3.10</span> Recipe 8: Choose a Representation for a Task</h2>
+<p>This final recipe synthesizes the chapter and turns the comparison into a practical decision guide.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Option 8A: Use <code>ts</code> when</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Option 8B: Use <code>zoo</code> or <code>xts</code> when</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">Option 8C: Use <code>tsibble</code> when</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-4" role="tab" aria-controls="tabset-8-4" aria-selected="false" href="">Option 8D: Use data frames and <code>tsbox</code> when</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-5" role="tab" aria-controls="tabset-8-5" aria-selected="false" href="">Discussion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<ul>
+<li>the data are regular;</li>
+<li>the focus is on classical time series methods;</li>
+<li>compact storage is sufficient.</li>
+</ul>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<ul>
+<li>the index should be explicit;</li>
+<li>dates or date-times matter;</li>
+<li>irregularity is possible;</li>
+<li>the workflow is finance- or index-oriented.</li>
+</ul>
+</div>
+<div id="tabset-8-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-3-tab">
+<ul>
+<li>the workflow is tidyverse-oriented;</li>
+<li>multiple series must be managed together;</li>
+<li>explicit keys and indices are desirable;</li>
+<li>modern forecasting pipelines are expected.</li>
+</ul>
+</div>
+<div id="tabset-8-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-4-tab">
+<ul>
+<li>import/export interoperability is central;</li>
+<li>the original files are not yet in a time-series structure;</li>
+<li>conversion between formats is part of the workflow.</li>
+</ul>
+</div>
+<div id="tabset-8-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-5-tab">
+<p>A useful decision sequence is:</p>
+<ol type="1">
+<li>Where does the data come from?</li>
+<li>Is the index regular or irregular?</li>
+<li>Are there one or many series?</li>
+<li>Which ecosystem will be used next: base R, indexed objects, or tidy forecasting tools?</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="summary" class="level2" data-number="3.11">
+<h2 data-number="3.11" class="anchored" data-anchor-id="summary"><span class="header-section-number">3.11</span> Summary</h2>
+<p>This chapter compared multiple ways of representing time series in R while keeping the same global temperature example throughout. The use of tabsets makes the alternatives easier to compare side by side: direct package datasets, plain vectors and data frames, classical <code>ts</code> objects, <code>zoo</code>/<code>xts</code>, tidy <code>tsibble</code>s, and <code>tsbox</code> conversions.</p>
+<p>The chapter also emphasized an important practical point: representation choices begin <strong>at import time</strong>. Reading data from CSV, RDS, text, or Excel is only the first step; the crucial second step is converting the imported values into a structure that supports the plotting, analysis, and modeling workflow that follows.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./basics.html" class="pagination-link" aria-label="Basics">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Basics</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./plotting.html" class="pagination-link" aria-label="Plotting Time Series">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Plotting Time Series</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
