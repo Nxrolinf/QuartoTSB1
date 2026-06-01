@@ -197,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#plot-tidy-time-series-with-tsibble" id="toc-plot-tidy-time-series-with-tsibble" class="nav-link" data-scroll-target="#plot-tidy-time-series-with-tsibble"><span class="header-section-number">4.6</span> Plot Tidy Time Series with <code>tsibble</code></a></li>
   <li><a href="#find-a-trend" id="toc-find-a-trend" class="nav-link" data-scroll-target="#find-a-trend"><span class="header-section-number">4.7</span> Find a Trend</a></li>
   <li><a href="#visualize-distribution-and-variation-over-time" id="toc-visualize-distribution-and-variation-over-time" class="nav-link" data-scroll-target="#visualize-distribution-and-variation-over-time"><span class="header-section-number">4.8</span> Visualize Distribution and Variation Over Time</a></li>
-  <li><a href="#recipe-8-arrange-several-plots-for-comparison" id="toc-recipe-8-arrange-several-plots-for-comparison" class="nav-link" data-scroll-target="#recipe-8-arrange-several-plots-for-comparison"><span class="header-section-number">4.9</span> Recipe 8: Arrange Several Plots for Comparison</a></li>
+  <li><a href="#compare-multiple-plots" id="toc-compare-multiple-plots" class="nav-link" data-scroll-target="#compare-multiple-plots"><span class="header-section-number">4.9</span> Compare Multiple Plots</a></li>
   <li><a href="#recipe-9-apply-practical-plotting-guidelines" id="toc-recipe-9-apply-practical-plotting-guidelines" class="nav-link" data-scroll-target="#recipe-9-apply-practical-plotting-guidelines"><span class="header-section-number">4.10</span> Recipe 9: Apply Practical Plotting Guidelines</a></li>
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">4.11</span> Summary</a></li>
   </ul>
@@ -1370,10 +1370,10 @@ Figure&nbsp;4.29: A simple comparison between the original and smoothed versions
 <h2 data-number="4.8" class="anchored" data-anchor-id="visualize-distribution-and-variation-over-time"><span class="header-section-number">4.8</span> Visualize Distribution and Variation Over Time</h2>
 <p>A complementary approach, offering alternative views of temporal variation.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Bars</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Option 7B: Histogram of observed values</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">Option 7C: Boxplot by period</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Bars</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Histogram</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-3" role="tab" aria-controls="tabset-7-3" aria-selected="false" href="">Boxplots</a></li></ul>
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
-<p>Use a bar chart to emphasize positive and negative values.</p>
+<p>Use a bar chart to emphasize positive and negative values. You have two representations here: the easy one (left), and the custom one (right).</p>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)) <span class="co"># two column plots</span></span>
@@ -1398,8 +1398,10 @@ Figure&nbsp;4.29: A simple comparison between the original and smoothed versions
 <span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
 <span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Temperature anomaly"</span></span>
 <span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() </span>
-<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)) <span class="co"># back to one</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>) <span class="co"># to remove fake legend titles</span></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>)) <span class="co"># back to one</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -1431,6 +1433,7 @@ Figure&nbsp;4.31: A bar chart emphasizing positive and negative yearly temperatu
 </div>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<p>Sometimes, a histogram can offer some hints on the available (observed) data. Play with the <code>bins</code> value for the number of represented bars.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1458,6 +1461,7 @@ Figure&nbsp;4.32: A histogram showing the distribution of temperature anomaly va
 </div>
 </div>
 <div id="tabset-7-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-3-tab">
+<p>Or you can use boxplots, for a distribution-centric view.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1503,13 +1507,14 @@ Figure&nbsp;4.33: A grouped view of temperature anomaly distributions across bro
 </div>
 </div>
 </section>
-<section id="recipe-8-arrange-several-plots-for-comparison" class="level2" data-number="4.9">
-<h2 data-number="4.9" class="anchored" data-anchor-id="recipe-8-arrange-several-plots-for-comparison"><span class="header-section-number">4.9</span> Recipe 8: Arrange Several Plots for Comparison</h2>
-<p>This recipe shows simple ways to place several plots together in order to support comparison.</p>
+<section id="compare-multiple-plots" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="compare-multiple-plots"><span class="header-section-number">4.9</span> Compare Multiple Plots</h2>
+<p>Sometimes it is handy to place several plots together, for comparisons.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Option 8A: Base graphics with <code>par(mfrow = ...)</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Option 8B: <code>facet_wrap()</code> in <code>ggplot2</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">Option 8C: Vertical comparison by reshaping</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-4" role="tab" aria-controls="tabset-8-4" aria-selected="false" href="">Discussion</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Basics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href=""><code>facet_wrap()</code></a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-3" role="tab" aria-controls="tabset-8-3" aria-selected="false" href="">Option 8C: Vertical comparison by reshaping</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-4" role="tab" aria-controls="tabset-8-4" aria-selected="false" href="">Discussion</a></li></ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<p>Check the <code>par(mfrow = c(...))</code> construction, for an easy setup.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1533,27 +1538,56 @@ Figure&nbsp;4.34: A base R multi-panel layout using <code>par(mfrow = c(1, 2))</
 </div>
 </div>
 <div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<p>Use a faceted view, when you have the necessary details on your data (may require additional investigations).</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gtemp_multi_tsibble, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> anomaly)) <span class="sc">+</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> series, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> series, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Comparison of Temperature Series"</span>,</span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Temperature anomaly"</span></span>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gtemp_multi_tsibble, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> anomaly, <span class="at">color =</span> series)) <span class="sc">+</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> series, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Land"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>,</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Ocean"</span> <span class="ot">=</span> <span class="st">"darkred"</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Comparison of Temperature Series"</span>,</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Temperature anomaly"</span></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-plot-facet-wrap" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-plot-facet-wrap-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-plot-facet-wrap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div aria-describedby="fig-plot-facet-wrap-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="plotting_files/figure-html/fig-plot-facet-wrap-1.png" class="img-fluid figure-img" width="768">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-facet-wrap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.35: A faceted layout using <code>ggplot2</code>, which is often more robust for Quarto output than base multi-panel state.
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-facet-wrap-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.35: A faceted layout using <code>ggplot2</code>, which might be more robust than base multi-panel state.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div id="fig-plot-facet-wrap-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-facet-wrap-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plotting_files/figure-html/fig-plot-facet-wrap-2.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-facet-wrap-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.36: A faceted layout using <code>ggplot2</code>, which might be more robust than base multi-panel state.
 </figcaption>
 </figure>
 </div>
@@ -1584,7 +1618,7 @@ Figure&nbsp;4.35: A faceted layout using <code>ggplot2</code>, which is often mo
 <img src="plotting_files/figure-html/fig-plot-vertical-compare-1.png" class="img-fluid figure-img" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-vertical-compare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.36: A vertically stacked comparison strategy using a long-format table and faceting.
+Figure&nbsp;4.37: A vertically stacked comparison strategy using a long-format table and faceting.
 </figcaption>
 </figure>
 </div>
