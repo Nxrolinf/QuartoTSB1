@@ -494,11 +494,11 @@
     ]
   },
   {
-    "objectID": "exercises.html#student-choice-mini-investigation-mandatory",
-    "href": "exercises.html#student-choice-mini-investigation-mandatory",
+    "objectID": "exercises.html#student-choice-mini-investigation-recommeded",
+    "href": "exercises.html#student-choice-mini-investigation-recommeded",
     "title": "5  Exercises",
-    "section": "5.11 Student choice mini-investigation (mandatory)",
-    "text": "5.11 Student choice mini-investigation (mandatory)\nChoose one dataset from one of the following sources:\n\nbase R datasets,\ntimeSeriesDataSets,\ntsibbledata,\na public CSV file such as one from jbrownlee/Datasets.\n\n\n\nCode\n# Replace this with your chosen dataset or imported object\nx &lt;- JohnsonJohnson\n\nclass(x)\nsummary(x)\nplot(x, col = \"steelblue\", main = deparse(substitute(x)))\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\nPrepare a short investigation including:\n\nthe name of the dataset;\nwhat it measures;\nthe class of the object;\nits time frequency (if applicable);\none plot;\na short interpretation (5–8 sentences) mentioning, where relevant:\n\ntrend,\nseasonality,\nvariability,\nunusual observations,\nsuitability for forecasting.",
+    "section": "5.11 Student choice mini-investigation (recommeded)",
+    "text": "5.11 Student choice mini-investigation (recommeded)\nChoose one dataset from one of the following sources:\n\nbase R datasets,\ntimeSeriesDataSets,\ntsibbledata,\na public CSV file such as one from jbrownlee/Datasets.\n\n\n\nCode\n# Replace this with your chosen dataset or imported object\nx &lt;- JohnsonJohnson\n\nclass(x)\nsummary(x)\nplot(x, col = \"steelblue\", main = deparse(substitute(x)))\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\nPrepare a short investigation including:\n\nthe name of the dataset;\nwhat it measures;\nthe class of the object;\nits time frequency (if applicable);\none plot;\na short interpretation (5–8 sentences) mentioning, where relevant:\n\ntrend,\nseasonality,\nvariability,\nunusual observations,\nsuitability for forecasting.",
     "crumbs": [
       "Exercises",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
