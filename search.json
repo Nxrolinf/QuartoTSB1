@@ -4,9 +4,9 @@
     "href": "index.html",
     "title": "Time Series Analysis with R",
     "section": "",
-    "text": "Introduction\nThese pages introduce time series analysis in R through a recipe-based approach.\nEach chapter includes a short conceptual introduction, usually followed by practical, self-contained recipes focused on common tasks.",
+    "text": "Introduction\nThese pages introduce time series analysis in R through a recipe-based approach.\nEach chapter includes a short conceptual introduction, usually followed by practical, self-contained recipes focused on common tasks.\nA version of this textbook is available at https://nxrolinf.github.io/QuartoTSB1",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Time Series with R: A Recipe-Based Introduction</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Time Series with R: A Naive Introduction</span>"
     ]
   },
   {
