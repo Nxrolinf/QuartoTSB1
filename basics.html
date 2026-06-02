@@ -180,6 +180,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Exercises</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -206,7 +223,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#formulate-the-objectives-of-time-series-analysis" id="toc-formulate-the-objectives-of-time-series-analysis" class="nav-link" data-scroll-target="#formulate-the-objectives-of-time-series-analysis"><span class="header-section-number">2.5</span> Formulate the Objectives of Time Series Analysis</a>
   <ul class="collapse">
   <li><a href="#example-basic-operations-matching-these-objectives" id="toc-example-basic-operations-matching-these-objectives" class="nav-link" data-scroll-target="#example-basic-operations-matching-these-objectives"><span class="header-section-number">2.5.1</span> Example: Basic operations matching these objectives</a></li>
-  <li><a href="#discussion-1" id="toc-discussion-1" class="nav-link" data-scroll-target="#discussion-1"><span class="header-section-number">2.5.2</span> Discussion</a></li>
   </ul></li>
   <li><a href="#why-time-matters" id="toc-why-time-matters" class="nav-link" data-scroll-target="#why-time-matters"><span class="header-section-number">2.6</span> Why Time Matters</a>
   <ul class="collapse">
@@ -498,18 +514,18 @@ Frequency = 1
 </div>
 </div>
 </div>
-<div class="callout callout-style-simple callout-important no-icon">
+<div class="callout callout-style-simple callout-important">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
 <ul>
-<li><p>The numeric vector contains only values.</p></li>
-<li><p>The data frame adds an explicit year variable.</p></li>
-<li><p>The <code>ts</code> object adds temporal semantics that R can use for time-aware analysis and plotting.</p></li>
+<li>The numeric vector contains only values.</li>
+<li>The data frame adds an explicit year variable.</li>
+<li>The <code>ts</code> object adds temporal semantics that R can use for time-aware analysis and plotting.</li>
 </ul>
-<p>While the representations similar information, they support different workflows and methods. This distinction becomes important when we’re dealing with various time series representations in R.</p>
+<p>While the representations use similar information, they may support different workflows and methods. This distinction becomes important when we’re dealing with various time series representations in R.</p>
 </div>
 </div>
 </div>
@@ -524,13 +540,13 @@ Frequency = 1
 <p>A fourth use is <strong>decision support</strong>, where time series help guide planning, operations, and control.</p>
 <section id="description-monitoring-and-a-simple-forecast" class="level3" data-number="2.4.1">
 <h3 data-number="2.4.1" class="anchored" data-anchor-id="description-monitoring-and-a-simple-forecast"><span class="header-section-number">2.4.1</span> Description, monitoring, and a simple forecast</h3>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout callout-style-simple callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Time series datasets
+<span class="screen-reader-only">Tip</span>Time series datasets
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -612,17 +628,17 @@ Check the package <code>timeSeriesDataSets</code> for more datasets: you’ll ha
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">snaive</span>(AirPassengers) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
-<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout callout-style-simple callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Discussion
+<span class="screen-reader-only">Tip</span>Discussion
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The first plot supports visual description. The moving average helps reveal long-term movement by smoothing short-term variation. The naive forecast illustrates the forecasting objective in its simplest form: future values are projected from past behavior.</p>
+<p>The first plot supports visual description. The <em>moving average</em> helps reveal long-term movement by smoothing short-term variation. The naive forecast illustrates the forecasting objective in its simplest form: future values are projected from past behavior.</p>
 </div>
 </div>
 </section>
@@ -712,10 +728,16 @@ Check the package <code>timeSeriesDataSets</code> for more datasets: you’ll ha
 </div>
 </div>
 </div>
-</section>
-<section id="discussion-1" class="level3" data-number="2.5.2">
-<h3 data-number="2.5.2" class="anchored" data-anchor-id="discussion-1"><span class="header-section-number">2.5.2</span> Discussion</h3>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
 <p>These examples illustrate how the same series can support multiple analytical goals. Visualization and summary serve description, autocorrelation helps reveal internal temporal structure, forecasting projects future values, and differencing can highlight changes or unusually large movements between consecutive periods.</p>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="why-time-matters" class="level2" data-number="2.6">
@@ -851,17 +873,14 @@ Check the package <code>timeSeriesDataSets</code> for more datasets: you’ll ha
 </div>
 </div>
 </div>
-<div class="callout callout-style-simple callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Discussion
-</div>
-</div>
-<div class="callout-body-container callout-body">
+<div class="callout-body-container">
 <p>The shuffled series contains the same values as the original series, but it no longer preserves their temporal order. As a result, the visible structure is lost and the autocorrelation pattern is altered. This simple experiment shows why time series analysis must take ordering seriously.</p>
+</div>
 </div>
 </div>
 </section>

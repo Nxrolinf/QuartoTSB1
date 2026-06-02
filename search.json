@@ -47,7 +47,7 @@
     "href": "basics.html#the-different-approaches-of-time-series",
     "title": "2  Basics",
     "section": "2.3 The Different Approaches of Time Series",
-    "text": "2.3 The Different Approaches of Time Series\nThere are several complementary ways to deal with a time series.\n\nA time series – as a set of measurements collected over time for the same process or unit of observation (practical approach).\nA time series as a realization of a stochastic process. This emphasizes that observations are typically not independent and that their ordering in time is central to the analysis (statistical approach).\nFor the case of R, time series are usually stored in special objects that preserve temporal structure and enable specific methods for plotting, transforming, and analyzing the data (computational approach, focused on representation).\n\n\n2.3.1 Example: different forms, same values\n\n\nCode\nlibrary(ggfortify)\nvalues &lt;- c(120, 135, 142, 160, 175)\n\n# 1. Plain numeric vector\nvalues\n\n\n[1] 120 135 142 160 175\n\n\nCode\n# 2. Data frame with explicit year column\nsales_df &lt;- data.frame(\n  year = 2020:2024,\n  sales = values\n)\nsales_df\n\n\n  year sales\n1 2020   120\n2 2021   135\n3 2022   142\n4 2023   160\n5 2024   175\n\n\nCode\n# Autoplot with specified columns\nggplot(sales_df, aes(x = year, y = sales)) +\n  geom_line(color = \"steelblue\", linewidth = 1) +\n  geom_point(color = \"steelblue\", size = 2) +\n  labs(\n    title = \"Sales Data as a Data Frame (ggplot2)\",\n    x = \"Year\",\n    y = \"Sales\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\n# 3. Time series object\nsales_ts &lt;- ts(values, start = 2020, frequency = 1)\nsales_ts\n\n\nTime Series:\nStart = 2020 \nEnd = 2024 \nFrequency = 1 \n[1] 120 135 142 160 175\n\n\nCode\n# Compare the structures\nclass(values)\n\n\n[1] \"numeric\"\n\n\nCode\nclass(sales_df)\n\n\n[1] \"data.frame\"\n\n\nCode\nclass(sales_ts)\n\n\n[1] \"ts\"\n\n\nCode\n# Plot the time series version\nplot(sales_ts,\n     type = \"o\",\n     pch = 16,\n     col = \"darkgreen\",\n     main = \"Sales Data as a Time Series (plot)\",\n     ylab = \"Sales\",\n     xlab = \"Year\")\n\n\n\n\n\n\n\n\n\nCode\n# Alternative plot for the time series version\nautoplot(sales_ts) +\n  labs(\n    title = \"Sales Data as a Time Series Object (autoplot)\",\n    x = \"Year\",\n    y = \"Sales\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe numeric vector contains only values.\nThe data frame adds an explicit year variable.\nThe ts object adds temporal semantics that R can use for time-aware analysis and plotting.\n\nWhile the representations similar information, they support different workflows and methods. This distinction becomes important when we’re dealing with various time series representations in R.",
+    "text": "2.3 The Different Approaches of Time Series\nThere are several complementary ways to deal with a time series.\n\nA time series – as a set of measurements collected over time for the same process or unit of observation (practical approach).\nA time series as a realization of a stochastic process. This emphasizes that observations are typically not independent and that their ordering in time is central to the analysis (statistical approach).\nFor the case of R, time series are usually stored in special objects that preserve temporal structure and enable specific methods for plotting, transforming, and analyzing the data (computational approach, focused on representation).\n\n\n2.3.1 Example: different forms, same values\n\n\nCode\nlibrary(ggfortify)\nvalues &lt;- c(120, 135, 142, 160, 175)\n\n# 1. Plain numeric vector\nvalues\n\n\n[1] 120 135 142 160 175\n\n\nCode\n# 2. Data frame with explicit year column\nsales_df &lt;- data.frame(\n  year = 2020:2024,\n  sales = values\n)\nsales_df\n\n\n  year sales\n1 2020   120\n2 2021   135\n3 2022   142\n4 2023   160\n5 2024   175\n\n\nCode\n# Autoplot with specified columns\nggplot(sales_df, aes(x = year, y = sales)) +\n  geom_line(color = \"steelblue\", linewidth = 1) +\n  geom_point(color = \"steelblue\", size = 2) +\n  labs(\n    title = \"Sales Data as a Data Frame (ggplot2)\",\n    x = \"Year\",\n    y = \"Sales\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\n# 3. Time series object\nsales_ts &lt;- ts(values, start = 2020, frequency = 1)\nsales_ts\n\n\nTime Series:\nStart = 2020 \nEnd = 2024 \nFrequency = 1 \n[1] 120 135 142 160 175\n\n\nCode\n# Compare the structures\nclass(values)\n\n\n[1] \"numeric\"\n\n\nCode\nclass(sales_df)\n\n\n[1] \"data.frame\"\n\n\nCode\nclass(sales_ts)\n\n\n[1] \"ts\"\n\n\nCode\n# Plot the time series version\nplot(sales_ts,\n     type = \"o\",\n     pch = 16,\n     col = \"darkgreen\",\n     main = \"Sales Data as a Time Series (plot)\",\n     ylab = \"Sales\",\n     xlab = \"Year\")\n\n\n\n\n\n\n\n\n\nCode\n# Alternative plot for the time series version\nautoplot(sales_ts) +\n  labs(\n    title = \"Sales Data as a Time Series Object (autoplot)\",\n    x = \"Year\",\n    y = \"Sales\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe numeric vector contains only values.\nThe data frame adds an explicit year variable.\nThe ts object adds temporal semantics that R can use for time-aware analysis and plotting.\n\nWhile the representations use similar information, they may support different workflows and methods. This distinction becomes important when we’re dealing with various time series representations in R.",
     "crumbs": [
       "Foundations",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
@@ -58,7 +58,7 @@
     "href": "basics.html#identify-common-uses-of-time-series",
     "title": "2  Basics",
     "section": "2.4 Identify Common Uses of Time Series",
-    "text": "2.4 Identify Common Uses of Time Series\nTime series are used in many domains because they help us understand how a variable evolves through time.\nOne major use is forecasting, where past data are used to predict future values.\nA second use is description and monitoring, where the goal is to inspect the evolution of the series and identify broad patterns such as growth, seasonality, or sudden changes.\nA third use is explanation, where the objective is to understand temporal relationships, delays, and persistence.\nA fourth use is decision support, where time series help guide planning, operations, and control.\n\n2.4.1 Description, monitoring, and a simple forecast\n\n\n\n\n\n\nNoteTime series datasets\n\n\n\nAn example based on the AirPassengers dataset, already available in R (the dataset package).\nCheck the package timeSeriesDataSets for more datasets: you’ll have to install the package(s) first.\n\n\n\n\nCode\n# Plot the series for visual inspection\nplot(AirPassengers,\n     main = \"AirPassengers: A Classic Time Series Example\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"navy\")\n\n\n\n\n\n\n\n\n\nCode\n# Add a simple moving average to highlight long-term movement\nair_ma &lt;- stats::filter(AirPassengers, rep(1/12, 12), sides = 2)\n\nplot(AirPassengers,\n     main = \"AirPassengers with 12-Month Moving Average\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"gray40\")\nlines(air_ma, col = \"red\", lwd = 2)\n\n\n\n\n\n\n\n\n\nCode\n# A very simple forecast as an illustration of the forecasting objective\nair_naive_fc &lt;- naive(AirPassengers, h = 12)\nplot(air_naive_fc,\n     main = \"Naive Forecast for AirPassengers\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipExercise\n\n\n\nYou can check other simple forecasting functions, like\n# library (forecast) is required!\n\nair_naive_fc1 &lt;- forecast(AirPassengers, h = 12)\nair_naive_fc2 &lt;- rwf (AirPassengers, h = 12)\nor do some other investigations\n# Drift forecast\nrwf(AirPassengers, drift = TRUE) |&gt; autoplot()\n\n# Seasonal naive forecasts\nsnaive(AirPassengers) |&gt; autoplot()\n\n\n\n\n\n\n\n\nImportantDiscussion\n\n\n\nThe first plot supports visual description. The moving average helps reveal long-term movement by smoothing short-term variation. The naive forecast illustrates the forecasting objective in its simplest form: future values are projected from past behavior.",
+    "text": "2.4 Identify Common Uses of Time Series\nTime series are used in many domains because they help us understand how a variable evolves through time.\nOne major use is forecasting, where past data are used to predict future values.\nA second use is description and monitoring, where the goal is to inspect the evolution of the series and identify broad patterns such as growth, seasonality, or sudden changes.\nA third use is explanation, where the objective is to understand temporal relationships, delays, and persistence.\nA fourth use is decision support, where time series help guide planning, operations, and control.\n\n2.4.1 Description, monitoring, and a simple forecast\n\n\n\n\n\n\nTipTime series datasets\n\n\n\nAn example based on the AirPassengers dataset, already available in R (the dataset package).\nCheck the package timeSeriesDataSets for more datasets: you’ll have to install the package(s) first.\n\n\n\n\nCode\n# Plot the series for visual inspection\nplot(AirPassengers,\n     main = \"AirPassengers: A Classic Time Series Example\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"navy\")\n\n\n\n\n\n\n\n\n\nCode\n# Add a simple moving average to highlight long-term movement\nair_ma &lt;- stats::filter(AirPassengers, rep(1/12, 12), sides = 2)\n\nplot(AirPassengers,\n     main = \"AirPassengers with 12-Month Moving Average\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"gray40\")\nlines(air_ma, col = \"red\", lwd = 2)\n\n\n\n\n\n\n\n\n\nCode\n# A very simple forecast as an illustration of the forecasting objective\nair_naive_fc &lt;- naive(AirPassengers, h = 12)\nplot(air_naive_fc,\n     main = \"Naive Forecast for AirPassengers\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipExercise\n\n\n\nYou can check other simple forecasting functions, like\n# library (forecast) is required!\n\nair_naive_fc1 &lt;- forecast(AirPassengers, h = 12)\nair_naive_fc2 &lt;- rwf (AirPassengers, h = 12)\nor do some other investigations\n# Drift forecast\nrwf(AirPassengers, drift = TRUE) |&gt; autoplot()\n\n# Seasonal naive forecasts\nsnaive(AirPassengers) |&gt; autoplot()\n\n\n\n\n\n\n\n\nTipDiscussion\n\n\n\nThe first plot supports visual description. The moving average helps reveal long-term movement by smoothing short-term variation. The naive forecast illustrates the forecasting objective in its simplest form: future values are projected from past behavior.",
     "crumbs": [
       "Foundations",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
@@ -69,7 +69,7 @@
     "href": "basics.html#formulate-the-objectives-of-time-series-analysis",
     "title": "2  Basics",
     "section": "2.5 Formulate the Objectives of Time Series Analysis",
-    "text": "2.5 Formulate the Objectives of Time Series Analysis\nThe objectives of time series analysis can be grouped into several broad categories:\n\nDescription: Summarize and visualize the structure of a series.\nExplanation: Understand the mechanisms or relationships underlying the observed behavior.\nForecasting: Predict future values using past observations.\nDetection: Identify unusual events, changes, anomalies, or structural breaks.\nSupport for decision making: Use time-dependent information to guide planning and intervention.\n\n\n2.5.1 Example: Basic operations matching these objectives\n\n\nCode\n# Description: simple summary and plot\nsummary(AirPassengers)\n\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  104.0   180.0   265.5   280.3   360.5   622.0 \n\n\nCode\nplot(AirPassengers,\n     main = \"Description: Plot of AirPassengers\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"steelblue\")\n\n\n\n\n\n\n\n\n\nCode\n# Explanation: inspect dependence through the autocorrelation function\nacf(AirPassengers,\n    main = \"Explanation: Autocorrelation in AirPassengers\")\n\n\n\n\n\n\n\n\n\nCode\n# Forecasting: produce a forecast from an exponential smoothing model\nair_hw &lt;- HoltWinters(AirPassengers)\nair_hw_fc &lt;- forecast(air_hw, h = 12)\n\nplot(air_hw_fc,\n     main = \"Forecasting: Holt-Winters Forecast\")\n\n\n\n\n\n\n\n\n\nCode\n# Detection: identify unusually large month-to-month changes\nair_diff &lt;- diff(AirPassengers)\nplot(air_diff,\n     main = \"Detection: Month-to-Month Change\",\n     ylab = \"Difference\",\n     xlab = \"Year\",\n     col = \"purple\")\nabline(h = 0, lty = 2)\n\n\n\n\n\n\n\n\n\n\n\n2.5.2 Discussion\nThese examples illustrate how the same series can support multiple analytical goals. Visualization and summary serve description, autocorrelation helps reveal internal temporal structure, forecasting projects future values, and differencing can highlight changes or unusually large movements between consecutive periods.",
+    "text": "2.5 Formulate the Objectives of Time Series Analysis\nThe objectives of time series analysis can be grouped into several broad categories:\n\nDescription: Summarize and visualize the structure of a series.\nExplanation: Understand the mechanisms or relationships underlying the observed behavior.\nForecasting: Predict future values using past observations.\nDetection: Identify unusual events, changes, anomalies, or structural breaks.\nSupport for decision making: Use time-dependent information to guide planning and intervention.\n\n\n2.5.1 Example: Basic operations matching these objectives\n\n\nCode\n# Description: simple summary and plot\nsummary(AirPassengers)\n\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  104.0   180.0   265.5   280.3   360.5   622.0 \n\n\nCode\nplot(AirPassengers,\n     main = \"Description: Plot of AirPassengers\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"steelblue\")\n\n\n\n\n\n\n\n\n\nCode\n# Explanation: inspect dependence through the autocorrelation function\nacf(AirPassengers,\n    main = \"Explanation: Autocorrelation in AirPassengers\")\n\n\n\n\n\n\n\n\n\nCode\n# Forecasting: produce a forecast from an exponential smoothing model\nair_hw &lt;- HoltWinters(AirPassengers)\nair_hw_fc &lt;- forecast(air_hw, h = 12)\n\nplot(air_hw_fc,\n     main = \"Forecasting: Holt-Winters Forecast\")\n\n\n\n\n\n\n\n\n\nCode\n# Detection: identify unusually large month-to-month changes\nair_diff &lt;- diff(AirPassengers)\nplot(air_diff,\n     main = \"Detection: Month-to-Month Change\",\n     ylab = \"Difference\",\n     xlab = \"Year\",\n     col = \"purple\")\nabline(h = 0, lty = 2)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThese examples illustrate how the same series can support multiple analytical goals. Visualization and summary serve description, autocorrelation helps reveal internal temporal structure, forecasting projects future values, and differencing can highlight changes or unusually large movements between consecutive periods.",
     "crumbs": [
       "Foundations",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
@@ -80,7 +80,7 @@
     "href": "basics.html#why-time-matters",
     "title": "2  Basics",
     "section": "2.6 Why Time Matters",
-    "text": "2.6 Why Time Matters\nTime changes the structure of the data because it introduces order and, often, dependence.\nIn many classical statistical methods, observations are assumed to be independent. Time series often violate this assumption because adjacent observations tend to be correlated.\nThis means that the order of the observations is not arbitrary. Shuffling a time series destroys part of the information we care about, namely its temporal structure.\n\n2.6.1 Example: Compare an ordered series with a shuffled version\n\nOriginalShuffled\n\n\n\n\nCode\nset.seed(123)\n\n# Original series\noriginal_series &lt;- AirPassengers\n\n# Shuffled version: same values, wrong order\nshuffled_series &lt;- ts(sample(as.numeric(AirPassengers)),\n                      start = start(AirPassengers),\n                      frequency = frequency(AirPassengers))\n\npar(mfrow = c(1, 2))\n\nautoplot(original_series) +\n  labs(\n    title = \"Original Time Series\",\n    x = \"Year\",\n    y = \"Passengers\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\npar(mfrow = c(1, 1))\n\n# Compare autocorrelation\npar(mfrow = c(1, 2)) # two column plots\n\nacf(original_series, main = \"ACF: Original Series\")\n\npar(mfrow = c(1, 1)) # back to one column\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nset.seed(123)\n\n# Original series\noriginal_series &lt;- AirPassengers\n\n# Shuffled version: same values, wrong order\nshuffled_series &lt;- ts(sample(as.numeric(AirPassengers)),\n                      start = start(AirPassengers),\n                      frequency = frequency(AirPassengers))\n\npar(mfrow = c(1, 2))\n\nautoplot(shuffled_series) +\n  labs(\n    title = \"Original Time Series\",\n    x = \"Year\",\n    y = \"Passengers\",\n    color = \"tomato\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\nplot(shuffled_series,\n     main = \"Shuffled Values\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"tomato\")\n\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\n\nCode\n# Compare autocorrelation\npar(mfrow = c(1, 2))\n\nacf(original_series, main = \"ACF: Original Series\")\nacf(shuffled_series, main = \"ACF: Shuffled Series\")\n\n\n\n\n\n\n\n\n\nCode\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\n\n\n\nTipDiscussion\n\n\n\nThe shuffled series contains the same values as the original series, but it no longer preserves their temporal order. As a result, the visible structure is lost and the autocorrelation pattern is altered. This simple experiment shows why time series analysis must take ordering seriously.",
+    "text": "2.6 Why Time Matters\nTime changes the structure of the data because it introduces order and, often, dependence.\nIn many classical statistical methods, observations are assumed to be independent. Time series often violate this assumption because adjacent observations tend to be correlated.\nThis means that the order of the observations is not arbitrary. Shuffling a time series destroys part of the information we care about, namely its temporal structure.\n\n2.6.1 Example: Compare an ordered series with a shuffled version\n\nOriginalShuffled\n\n\n\n\nCode\nset.seed(123)\n\n# Original series\noriginal_series &lt;- AirPassengers\n\n# Shuffled version: same values, wrong order\nshuffled_series &lt;- ts(sample(as.numeric(AirPassengers)),\n                      start = start(AirPassengers),\n                      frequency = frequency(AirPassengers))\n\npar(mfrow = c(1, 2))\n\nautoplot(original_series) +\n  labs(\n    title = \"Original Time Series\",\n    x = \"Year\",\n    y = \"Passengers\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\npar(mfrow = c(1, 1))\n\n# Compare autocorrelation\npar(mfrow = c(1, 2)) # two column plots\n\nacf(original_series, main = \"ACF: Original Series\")\n\npar(mfrow = c(1, 1)) # back to one column\n\n\n\n\n\n\n\n\n\n\n\n\n\nCode\nset.seed(123)\n\n# Original series\noriginal_series &lt;- AirPassengers\n\n# Shuffled version: same values, wrong order\nshuffled_series &lt;- ts(sample(as.numeric(AirPassengers)),\n                      start = start(AirPassengers),\n                      frequency = frequency(AirPassengers))\n\npar(mfrow = c(1, 2))\n\nautoplot(shuffled_series) +\n  labs(\n    title = \"Original Time Series\",\n    x = \"Year\",\n    y = \"Passengers\",\n    color = \"tomato\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCode\nplot(shuffled_series,\n     main = \"Shuffled Values\",\n     ylab = \"Passengers\",\n     xlab = \"Year\",\n     col = \"tomato\")\n\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\n\nCode\n# Compare autocorrelation\npar(mfrow = c(1, 2))\n\nacf(original_series, main = \"ACF: Original Series\")\nacf(shuffled_series, main = \"ACF: Shuffled Series\")\n\n\n\n\n\n\n\n\n\nCode\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\n\n\n\nThe shuffled series contains the same values as the original series, but it no longer preserves their temporal order. As a result, the visible structure is lost and the autocorrelation pattern is altered. This simple experiment shows why time series analysis must take ordering seriously.",
     "crumbs": [
       "Foundations",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Basics</span>"
@@ -370,6 +370,149 @@
     "crumbs": [
       "Foundations",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Plotting Time Series</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html",
+    "href": "exercises.html",
+    "title": "5  Exercises",
+    "section": "",
+    "text": "5.1 Discover datasets\nThere are many datasets available in R, adapted for time series use. Some are ts-native, others are data frames/tsibble. Take a look at the different options you have.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#discover-datasets",
+    "href": "exercises.html#discover-datasets",
+    "title": "5  Exercises",
+    "section": "",
+    "text": "Base RtimeSeriesDataSetstsibbledata\n\n\n\n\nCode\n# List datasets from the built-in datasets package\nall_datasets &lt;- data(package = \"datasets\")\nall_datasets$results[, c(\"Package\", \"Item\", \"Title\")]\n\n\n\n\nCode\n# Optional: search dataset names for possible time-related content\nidx &lt;- grepl(\n  \"air|temp|death|gas|stock|sun|rain|sales|passenger|co2|nile|market\",\n  all_datasets$results[, \"Item\"],\n  ignore.case = TRUE\n)\nall_datasets$results[idx, c(\"Package\", \"Item\", \"Title\")]\n\n\n\n\n\n\nCode\n# Uncomment if needed:\n# install.packages(\"timeSeriesDataSets\")\n\nif (requireNamespace(\"timeSeriesDataSets\", quietly = TRUE)) {\n  data(package = \"timeSeriesDataSets\")$results[, c(\"Package\", \"Item\", \"Title\")]\n} else {\n  message(\"Package 'timeSeriesDataSets' is not installed. Install it with install.packages('timeSeriesDataSets').\")\n}\n\n\n\n\n\n\nCode\n# Uncomment if needed:\n# install.packages(\"tsibbledata\")\n\nif (requireNamespace(\"tsibbledata\", quietly = TRUE)) {\n  data(package = \"tsibbledata\")$results[, c(\"Package\", \"Item\", \"Title\")]\n} else {\n  message(\"Package 'tsibbledata' is not installed. Install it with install.packages('tsibbledata').\")\n}\n\n\n\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nIdentify at least three datasets that appear to contain time series data.\n\nFor each one, note whether it seems to be yearly, quarterly, monthly, or something else.\nState whether it looks univariate or multivariate.\n\nChoose two datasets from timeSeriesDataSets.\nChoose two datasets from tsibbledata.\n\nFor each selected dataset, note the object class and what it appears to measure.\nDecide whether each dataset is univariate or multivariate.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#recognize-time-series-objects",
+    "href": "exercises.html#recognize-time-series-objects",
+    "title": "5  Exercises",
+    "section": "5.2 Recognize time series objects",
+    "text": "5.2 Recognize time series objects\nInspect the following built-in datasets (or others, of your choice):\n\nAirPassengers\nJohnsonJohnson\nnottem\nldeaths\nEuStockMarkets\n\n\n\nCode\nseries_list &lt;- list(\n  AirPassengers = AirPassengers,\n  JohnsonJohnson = JohnsonJohnson,\n  nottem = nottem,\n  ldeaths = ldeaths,\n  EuStockMarkets = EuStockMarkets\n)\n\nlapply(series_list, class)\nlapply(series_list, start)\nlapply(series_list, end)\nlapply(series_list, frequency)\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nDetermine which datasets are stored as ts objects.\nDecide which are univariate and which are multivariate.\nState the time frequency of each dataset.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#play-with-a-time-series-dataset-basic",
+    "href": "exercises.html#play-with-a-time-series-dataset-basic",
+    "title": "5  Exercises",
+    "section": "5.3 Play with a time series dataset (basic)",
+    "text": "5.3 Play with a time series dataset (basic)\nChoose one dataset from the following list, or another built-in time series dataset you discover:\n\nAirPassengers\nJohnsonJohnson\nnottem\nldeaths\nNile\nco2\nsunspot.year\nUKgas\n\n\n\nCode\n# Replace AirPassengers with your chosen dataset\nx &lt;- AirPassengers\n\nclass(x)\nstart(x)\nend(x)\nfrequency(x)\nsummary(x)\nplot(x, col = \"steelblue\", main = deparse(substitute(x)))\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\nWrite 2–4 sentences describing:\n\nwhether the series has a visible trend;\nwhether it seems to have seasonality or repeated patterns;\nwhether any unusual values or abrupt changes are visible.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#play-with-a-dataset-timeseriesdatasets",
+    "href": "exercises.html#play-with-a-dataset-timeseriesdatasets",
+    "title": "5  Exercises",
+    "section": "5.4 Play with a dataset (timeSeriesDataSets)",
+    "text": "5.4 Play with a dataset (timeSeriesDataSets)\n\n\nCode\nif (requireNamespace(\"timeSeriesDataSets\", quietly = TRUE)) {\n  library(timeSeriesDataSets)\n\n  # Replace gtemp_both_ts with another dataset from the package if you wish\n  x &lt;- gtemp_both_ts\n\n  class(x)\n  start(x)\n  end(x)\n  frequency(x)\n  summary(x)\n  plot(x, col = \"firebrick\", main = deparse(substitute(x)))\n} else {\n  message(\"Install 'timeSeriesDataSets' to complete this exercise.\")\n}\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nState what the dataset measures.\nDetermine whether it is univariate or multivariate.\nDescribe one visible feature of the plot.\nExplain why this dataset qualifies as a time series.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#play-with-a-dataset-tsibbledata",
+    "href": "exercises.html#play-with-a-dataset-tsibbledata",
+    "title": "5  Exercises",
+    "section": "5.5 Play with a dataset (tsibbledata)",
+    "text": "5.5 Play with a dataset (tsibbledata)\n\n\nCode\n# Uncomment if needed:\n# install.packages(c(\"tsibbledata\", \"ggplot2\"))\n\nif (requireNamespace(\"tsibbledata\", quietly = TRUE)) {\n  library(tsibbledata)\n  library(ggplot2)\n\n  # Replace gafa_stock with another dataset from tsibbledata if you wish\n  x &lt;- gafa_stock\n\n  class(x)\n  head(x)\n\n  ggplot(x, aes(x = Date, y = Close, colour = Symbol)) +\n    geom_line() +\n    labs(\n      title = \"Example tsibbledata dataset\",\n      x = \"Date\",\n      y = \"Close\"\n    )\n} else {\n  message(\"Install 'tsibbledata' to complete this exercise.\")\n}\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nIdentify the time index in the dataset.\nIdentify the measured variable(s).\nExplain how this dataset differs from a basic ts object.\nWrite 2–4 sentences describing what you observe.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#alternative-representations-same-same-data",
+    "href": "exercises.html#alternative-representations-same-same-data",
+    "title": "5  Exercises",
+    "section": "5.6 Alternative representations, same same data",
+    "text": "5.6 Alternative representations, same same data\nCreate the same short series in two forms:\n\nas a numeric vector;\nas a ts object.\n\n\n\nCode\nvalues &lt;- c(120, 135, 142, 160, 175)\nvalues\n\nvalues_ts &lt;- ts(values, start = 2020, frequency = 1)\nvalues_ts\n\nclass(values)\nclass(values_ts)\n\nplot(values_ts,\n     type = \"o\",\n     pch = 16,\n     col = \"darkgreen\",\n     main = \"Values as a Time Series\",\n     xlab = \"Year\",\n     ylab = \"Value\")\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nExplain what information is present in the ts object that is not present in the plain vector.\nState why the ts object is more useful for time-aware analysis.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#why-time-matters",
+    "href": "exercises.html#why-time-matters",
+    "title": "5  Exercises",
+    "section": "5.7 Why time matters",
+    "text": "5.7 Why time matters\nCompare an ordered series with a shuffled version of itself.\n\n\nCode\nset.seed(123)\n\nx &lt;- AirPassengers\nx_shuffled &lt;- ts(\n  sample(as.numeric(x)),\n  start = start(x),\n  frequency = frequency(x)\n)\n\npar(mfrow = c(1, 2))\nplot(x, col = \"steelblue\", main = \"Original series\")\nplot(x_shuffled, col = \"tomato\", main = \"Shuffled series\")\npar(mfrow = c(1, 1))\n\n\n\n\nCode\npar(mfrow = c(1, 2))\nacf(x, main = \"ACF: original\")\nacf(x_shuffled, main = \"ACF: shuffled\")\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nDo the two series contain the same values?\nWhy do they look different?\nHow does the autocorrelation structure change after shuffling?\nWhat does this show about the importance of temporal order?",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#a-simple-moving-average",
+    "href": "exercises.html#a-simple-moving-average",
+    "title": "5  Exercises",
+    "section": "5.8 A simple moving average",
+    "text": "5.8 A simple moving average\nChoose a monthly dataset such as AirPassengers, nottem, co2, or ldeaths.\n\n\nCode\n# Replace AirPassengers with your chosen series\nx &lt;- AirPassengers\n\nx_ma &lt;- stats::filter(x, rep(1/12, 12), sides = 2)\n\nplot(x,\n     main = \"Series with 12-period moving average\",\n     xlab = \"Time\",\n     ylab = \"Value\",\n     col = \"gray40\")\nlines(x_ma, col = \"red\", lwd = 2)\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nExplain what the moving average helps reveal.\nState whether the moving average is smoother than the original series.\nDescribe what short-term variation becomes less visible.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#a-forecasting-experiment",
+    "href": "exercises.html#a-forecasting-experiment",
+    "title": "5  Exercises",
+    "section": "5.9 A forecasting experiment",
+    "text": "5.9 A forecasting experiment\nUse a simple forecasting function on a dataset of your choice.\n\n\nCode\n# Uncomment if needed:\n# install.packages(\"forecast\")\n\nlibrary(forecast)\n\nx &lt;- AirPassengers\n\nfc_naive &lt;- naive(x, h = 12)\nplot(fc_naive, main = \"Naive forecast\")\n\n\n\n\nCode\n# Optional comparisons\nfc_rw &lt;- rwf(x, h = 12)\nfc_snaive &lt;- snaive(x, h = 12)\n\nplot(fc_rw, main = \"Random walk forecast\")\nplot(fc_snaive, main = \"Seasonal naive forecast\")\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nWhat does the naive forecast assume?\nFor your chosen dataset, does the forecast seem plausible?\nWhich of the three simple forecasting approaches seems most appropriate, and why?",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#search-and-play-with-custom-time-series-dataset",
+    "href": "exercises.html#search-and-play-with-custom-time-series-dataset",
+    "title": "5  Exercises",
+    "section": "5.10 Search and play with custom time series dataset",
+    "text": "5.10 Search and play with custom time series dataset\nUse one of the CSV files from the public repository, via github, jbrownlee/Datasets (or other repositories)\nPossible examples:\n\nairline-passengers.csv\ndaily-min-temperatures.csv\ndaily-total-female-births.csv\n\n\n\nCode\nurl &lt;- \"https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv\"\ncustom_df &lt;- read.csv(url)\nhead(custom_df)\nstr(custom_df)\n\n\n\n\nCode\n# A simple plot if the file has two columns: date/time and value\nplot(custom_df[[2]],\n     type = \"l\",\n     col = \"steelblue\",\n     main = \"Custom dataset from jbrownlee/Datasets\",\n     xlab = \"Observation index\",\n     ylab = names(custom_df)[2])\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\n\nIdentify the variable measured in the file.\nDecide whether the data appear to be daily, monthly, yearly, or something else.\nConvert the numeric column to a ts object if a regular frequency makes sense.\nWrite 2–4 sentences describing the series.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#student-choice-mini-investigation-mandatory",
+    "href": "exercises.html#student-choice-mini-investigation-mandatory",
+    "title": "5  Exercises",
+    "section": "5.11 Student choice mini-investigation (mandatory)",
+    "text": "5.11 Student choice mini-investigation (mandatory)\nChoose one dataset from one of the following sources:\n\nbase R datasets,\ntimeSeriesDataSets,\ntsibbledata,\na public CSV file such as one from jbrownlee/Datasets.\n\n\n\nCode\n# Replace this with your chosen dataset or imported object\nx &lt;- JohnsonJohnson\n\nclass(x)\nsummary(x)\nplot(x, col = \"steelblue\", main = deparse(substitute(x)))\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\nPrepare a short investigation including:\n\nthe name of the dataset;\nwhat it measures;\nthe class of the object;\nits time frequency (if applicable);\none plot;\na short interpretation (5–8 sentences) mentioning, where relevant:\n\ntrend,\nseasonality,\nvariability,\nunusual observations,\nsuitability for forecasting.",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
+    ]
+  },
+  {
+    "objectID": "exercises.html#compare-several-time-series-from-different-sources",
+    "href": "exercises.html#compare-several-time-series-from-different-sources",
+    "title": "5  Exercises",
+    "section": "5.12 Compare several time series from different sources",
+    "text": "5.12 Compare several time series from different sources\nChoose three datasets from different sources (for example, one built-in dataset, one from timeSeriesDataSets, and one from tsibbledata or a web CSV).\n\n\nCode\npar(mfrow = c(3, 1))\nplot(JohnsonJohnson, col = \"steelblue\", main = \"JohnsonJohnson\")\nplot(ldeaths, col = \"firebrick\", main = \"ldeaths\")\nplot(nottem, col = \"darkorange\", main = \"nottem\")\npar(mfrow = c(1, 1))\n\n\n\n\n\n\n\n\nImportantTasks\n\n\n\nFor each series:\n\nstate what it measures;\nnote whether it is yearly, quarterly, monthly, daily, or another frequency;\ndescribe its most visible feature.\n\nThen write a short comparison paragraph answering:\n\nWhich one shows the clearest trend?\nWhich one shows the clearest seasonality?\nWhich one seems hardest to forecast visually?\n\n\n\n\n\n\n\n\n\n\nCautionFinal questions\n\n\n\nAnswer the following in a few sentences each:\n\nWhat distinguishes a time series from an ordinary unordered dataset?\nWhy does temporal ordering matter?\nWhat is the difference between a numeric vector, a data frame with a time column, and a ts object?\nWhat are some usual objectives of time series analysis?\nWhy can two datasets contain the same values but still convey very different information when ordered differently?",
+    "crumbs": [
+      "Exercises",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Exercises</span>"
     ]
   }
 ]
