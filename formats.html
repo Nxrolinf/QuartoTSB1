@@ -586,15 +586,30 @@ Figure&nbsp;3.1: Global temperature anomalies represented as a plain data frame 
 <p>These options illustrate the baseline representations that are easiest to inspect, reshape, and export. The trade-off is that temporal semantics are not enforced automatically. If unsure, consider the <code>tsbox</code> library.</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Additional work
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pick another dataset and play with the dataset. There are more exercises in the final chapter.</p>
+</div>
+</div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsbox)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibbletime)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_land_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_ocean_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>x.ts <span class="ot">&lt;-</span> <span class="fu">ts_c</span>(gtemp_land_ts, gtemp_ocean_ts)</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#! eval: false</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This code is only informative!</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tsbox)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibbletime)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_land_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gtemp_ocean_ts, <span class="at">package =</span> <span class="st">"timeSeriesDataSets"</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>x.ts <span class="ot">&lt;-</span> <span class="fu">ts_c</span>(gtemp_land_ts, gtemp_ocean_ts)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(x.ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time Series:
@@ -932,11 +947,12 @@ Figure&nbsp;3.2: The <code>gtemp_both_ts</code> series plotted as a classical <c
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Exercise
+<span class="screen-reader-only">Tip</span>Additional work
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Check the various conversion formats supported by <code>tsbox</code> and repeat previous transformations. Try to plot the auto-generated outputs (check if <code>plot</code>, <code>ggplot</code>, or <code>autoplot</code> is available for your dataset)</p>
+<p>There are more exercises in the final chapter.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -1077,6 +1093,20 @@ Figure&nbsp;3.2: The <code>gtemp_both_ts</code> series plotted as a classical <c
 <div class="callout-body-container callout-body">
 <p>There are more options for supporting data imports. Check the <code>readr</code> package (already included in <code>tidyverse</code>): <code>read_delim()</code>, <code>read_tsv()</code>, <code>read_csv</code>, <code>read_table()</code>, <code>read_fwf()</code>.</p>
 <p>You can check the available cheatsheet for <code>readr</code> and other options, on <a href="https://github.com/rstudio/cheatsheets/" class="uri">https://github.com/rstudio/cheatsheets/</a></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Additional work
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Repeat one of previous exercises from this chapter, for the imported data.</p>
+<p>There are more exercises in the final chapter.</p>
 </div>
 </div>
 </section>
